@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur salaire vs dividendes Québec — PME et travailleurs autonomes</title>
+<meta name="description" content="Comparez l'impôt total et le revenu net d'une stratégie salaire, dividendes ou mixte pour votre PME québécoise. Estimation rapide et personnalisable.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/salaire-vs-dividendes.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Salaire vs dividendes — Calculateur Québec">
+<meta property="og:description" content="Estimez l'impôt corporatif et personnel d'une stratégie salaire, dividendes ou mixte au Québec.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <a href="/calculatrices/reer-vs-celi.html">REER vs CELI</a>
+      <a href="/calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a>
+      <a href="/calculatrices/retraite.html">Retraite</a>
+      <a href="/calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="/">Accueil</a> › <span>Salaire vs dividendes</span>
+  </nav>
+
+  <h1>Calculateur salaire vs dividendes (Québec)</h1>
+  <p class="lede muted">Pour les propriétaires de PME québécoises : si votre société génère des bénéfices, vaut-il mieux vous verser un salaire, des dividendes, ou un mélange des deux? Ce calculateur estime l'impôt total et le revenu net qui restent dans vos poches.</p>
+
+  <div class="notice">
+    <strong>Approximation importante :</strong> ce calculateur n'utilise pas les paliers d'imposition réels, le mécanisme du gross-up des dividendes, le crédit d'impôt pour dividendes, le RRQ, le RQAP, l'AE, ni l'IMRTD. Il sert à comparer rapidement des ordres de grandeur. Avant toute décision, consultez votre comptable.
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field">
+        <label for="revenuSociete">Revenu brut disponible dans la société ($)</label>
+        <input type="number" id="revenuSociete" min="0" step="1000" value="200000">
+        <div class="hint">Bénéfice avant rémunération du propriétaire.</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="salaire">Salaire choisi ($)</label>
+          <input type="number" id="salaire" min="0" step="500" value="80000">
+        </div>
+        <div class="field">
+          <label for="dividendes">Dividendes choisis ($)</label>
+          <input type="number" id="dividendes" min="0" step="500" value="40000">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="tauxPerso">Taux d'impôt personnel sur salaire (%)</label>
+          <input type="number" id="tauxPerso" min="0" max="60" step="0.5" value="37">
+          <div class="hint">Taux marginal estimé.</div>
+        </div>
+        <div class="field">
+          <label for="tauxCorpo">Taux d'impôt corporatif (%)</label>
+          <input type="number" id="tauxCorpo" min="0" max="60" step="0.5" value="20.5">
+          <div class="hint">Petite entreprise au Qc : ≈ 12,2 %. Société active sans DPE : ≈ 20–26 %.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="tauxDiv">Taux d'impôt personnel effectif sur dividendes (%)</label>
+        <input type="number" id="tauxDiv" min="0" max="60" step="0.5" value="35">
+        <div class="hint">Pour dividendes ordinaires (non déterminés) au Québec, souvent dans l'ordre de 30–43 % au taux marginal selon le revenu.</div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcSalaireDividendes()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile">
+          <div class="label">Impôt corporatif</div>
+          <div class="value" id="r-impot-corpo">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Impôt personnel total</div>
+          <div class="value" id="r-impot-perso">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Net du salaire</div>
+          <div class="value" id="r-net-salaire">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Net des dividendes</div>
+          <div class="value" id="r-net-div">—</div>
+        </div>
+        <div class="result-tile highlight">
+          <div class="label">Net total dans vos poches</div>
+          <div class="value" id="r-net-total">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Reste dans la société</div>
+          <div class="value" id="r-reste-societe">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Impôt total payé</div>
+          <div class="value" id="r-impot-total">—</div>
+        </div>
+      </div>
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <article class="article-content section">
+    <h2>Comment interpréter les résultats</h2>
+    <p>La question « salaire ou dividendes » est l'une des plus posées par les propriétaires de PME au Québec. La réponse n'est jamais universelle : elle dépend de votre revenu personnel, du taux d'imposition de la société, de votre besoin de cotiser au RRQ et au REER, et de votre stratégie d'accumulation à long terme.</p>
+
+    <h3>Principe : l'intégration fiscale</h3>
+    <p>Le système fiscal canadien est conçu autour du <strong>principe d'intégration</strong> : en théorie, payer un revenu sous forme de salaire ou de dividendes devrait laisser à peu près le même montant net entre les mains du propriétaire. En pratique, l'intégration n'est <em>jamais parfaite</em> : selon le palier de revenu, le taux corporatif applicable, et la province, l'écart peut atteindre quelques points de pourcentage en faveur de l'un ou de l'autre.</p>
+
+    <h3>Avantages classiques du salaire</h3>
+    <ul>
+      <li><strong>Cotisations au RRQ</strong> : vous accumulez des droits de prestation à vie.</li>
+      <li><strong>Droits REER</strong> : seul le revenu de salaire (et non les dividendes) génère des droits de cotisation REER.</li>
+      <li><strong>Admissibilité à plusieurs prestations</strong> : RQAP, certains crédits remboursables, etc.</li>
+      <li><strong>Déduction pour la société</strong> : le salaire est déductible, ce qui réduit l'impôt corporatif.</li>
+    </ul>
+
+    <h3>Avantages classiques des dividendes</h3>
+    <ul>
+      <li><strong>Aucune cotisation sociale</strong> : ni RRQ, ni RQAP, ni AE.</li>
+      <li><strong>Souplesse</strong> : pas de retenues à la source, versement à votre rythme.</li>
+      <li><strong>Optimisation du fractionnement</strong> avec un conjoint ou des actionnaires admissibles (sous réserve des règles de l'IRF — impôt sur le revenu fractionné).</li>
+    </ul>
+
+    <h3>Stratégie hybride (mix)</h3>
+    <p>En pratique, beaucoup de propriétaires de PME se versent un <strong>salaire suffisant pour maximiser le RRQ et les droits REER</strong>, puis complètent avec des dividendes. Le salaire d'environ 70 000 $ à 90 000 $ est souvent évoqué comme un seuil raisonnable, mais cela dépend de votre situation.</p>
+
+    <h3>Limites du calcul</h3>
+    <ul>
+      <li><strong>Pas de gross-up</strong> : le crédit d'impôt pour dividendes (déterminés et non déterminés) n'est pas modélisé. Il atténue significativement la double imposition des dividendes.</li>
+      <li><strong>Pas de cotisations sociales</strong> : RRQ, RQAP et AE peuvent représenter plusieurs milliers de dollars par année.</li>
+      <li><strong>Pas de paliers</strong> : un seul taux marginal est appliqué, alors qu'en réalité les premières tranches du salaire sont imposées à des taux beaucoup plus bas.</li>
+      <li><strong>Pas d'IMRTD</strong> : pour les dividendes non déterminés versés à partir de revenus de placement de la société, il existe un mécanisme de récupération qui change l'équation.</li>
+    </ul>
+    <p>Pour un calcul plus précis, vous pouvez consulter les tables annuelles publiées par les grands cabinets comptables ou utiliser un logiciel professionnel comme Taxprep / TaxCycle.</p>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>Faut-il toujours se verser un salaire pour cotiser au RRQ?</summary>
+      <p>Pas nécessairement, mais c'est souvent souhaitable. Le RRQ verse une rente à vie, indexée, qui peut représenter plus de 17 000 $/an au régime de base actuel. Beaucoup de propriétaires choisissent de se verser au moins le maximum cotisable au RRQ chaque année.</p>
+    </details>
+
+    <details>
+      <summary>Les dividendes coûtent-ils plus cher en impôt total?</summary>
+      <p>Pas forcément. Avec le gross-up et le crédit d'impôt pour dividendes, le système est conçu pour que le total (impôt corporatif + impôt personnel sur le dividende) soit proche de l'impôt sur un salaire équivalent. Mais les écarts varient selon le taux corporatif applicable.</p>
+    </details>
+
+    <details>
+      <summary>Qu'est-ce que la déduction pour petite entreprise (DPE)?</summary>
+      <p>C'est un taux d'impôt corporatif réduit (≈ 12,2 % au Québec) sur les premiers 500 000 $ de revenu actif d'une société privée sous contrôle canadien (SPCC) admissible. Au-delà, le taux passe à environ 26,5 %. Cela influence directement le calcul salaire vs dividendes.</p>
+    </details>
+
+    <details>
+      <summary>Mon conjoint peut-il recevoir des dividendes pour fractionner le revenu?</summary>
+      <p>Possible mais encadré : depuis 2018, les règles de l'IRF (impôt sur le revenu fractionné) limitent fortement le fractionnement avec des proches qui ne contribuent pas activement à l'entreprise. Consultez votre fiscaliste avant de structurer un fractionnement.</p>
+    </details>
+
+    <details>
+      <summary>Vaut-il mieux laisser les bénéfices dans la société?</summary>
+      <p>Souvent oui : si vous n'avez pas besoin du revenu pour vivre, laisser les profits dans la société (à un taux d'impôt souvent plus bas) et les investir peut accélérer l'accumulation. Attention : les revenus passifs au-delà de 50 000 $/an réduisent la déduction pour petite entreprise.</p>
+    </details>
+  </section>
+
+  <div class="notice">
+    <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil fiscal, financier ou juridique. Avant toute décision concernant la rémunération d'un propriétaire-dirigeant, consultez un comptable autorisé (CPA).
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculateurs</h4>
+        <ul>
+          <li><a href="/calculatrices/reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="/calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a></li>
+          <li><a href="/calculatrices/retraite.html">Retraite</a></li>
+          <li><a href="/calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>À savoir</h4>
+        <ul>
+          <li>Information générale.</li>
+          <li>Pas un conseil professionnel.</li>
+          <li>Calculs locaux dans votre navigateur.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations approximatives à des fins éducatives.
+    </div>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Faut-il toujours se verser un salaire pour cotiser au RRQ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pas nécessairement, mais c'est souvent souhaitable. Le RRQ verse une rente à vie indexée. Beaucoup de propriétaires se versent au moins le maximum cotisable au RRQ chaque année."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Les dividendes coûtent-ils plus cher en impôt total?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pas forcément. Avec le gross-up et le crédit d'impôt pour dividendes, le système est conçu pour que l'impôt total soit proche de celui d'un salaire équivalent. Les écarts varient selon le taux corporatif applicable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qu'est-ce que la déduction pour petite entreprise (DPE)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "C'est un taux d'impôt corporatif réduit (environ 12,2 % au Québec) sur les premiers 500 000 $ de revenu actif d'une société privée sous contrôle canadien admissible. Au-delà, le taux passe autour de 26,5 %."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mon conjoint peut-il recevoir des dividendes pour fractionner le revenu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "C'est encadré par les règles de l'impôt sur le revenu fractionné (IRF). Le fractionnement avec un proche qui ne contribue pas activement à l'entreprise est largement restreint depuis 2018."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Vaut-il mieux laisser les bénéfices dans la société?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Souvent oui si vous n'avez pas besoin du revenu pour vivre. Attention cependant : les revenus passifs au-delà de 50 000 $ par année réduisent la déduction pour petite entreprise."
+      }
+    }
+  ]
+}
+</script>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/calculators.js"></script>
+</body>
+</html>

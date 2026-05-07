@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur retraite Québec — Capital, durée et écart estimés</title>
+<meta name="description" content="Estimez votre capital à la retraite, le nombre d'années de revenu couvert et l'écart par rapport à la cible. Calcul simple, ajustable et confidentiel.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/retraite.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculateur retraite Québec">
+<meta property="og:description" content="Combien vais-je avoir à la retraite? Estimez votre capital et la durée de votre revenu.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <a href="/calculatrices/reer-vs-celi.html">REER vs CELI</a>
+      <a href="/calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a>
+      <a href="/calculatrices/retraite.html">Retraite</a>
+      <a href="/calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="/">Accueil</a> › <span>Retraite</span>
+  </nav>
+
+  <h1>Calculateur retraite (Québec)</h1>
+  <p class="lede muted">Estimez le capital que vous accumulerez d'ici votre retraite, et combien d'années de revenu votre épargne pourrait couvrir. Outil simple : à utiliser comme un premier ordre de grandeur.</p>
+
+  <div class="notice">
+    <strong>Approximation :</strong> ce calculateur utilise un seul taux de rendement constant et n'inclut ni RRQ, ni Pension de la sécurité de la vieillesse, ni Supplément de revenu garanti, ni inflation, ni fiscalité au décaissement.
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="ageActuel">Âge actuel</label>
+          <input type="number" id="ageActuel" min="18" max="80" step="1" value="35">
+        </div>
+        <div class="field">
+          <label for="ageRetraite">Âge prévu de retraite</label>
+          <input type="number" id="ageRetraite" min="40" max="80" step="1" value="65">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="epargne">Épargne actuelle ($)</label>
+        <input type="number" id="epargne" min="0" step="500" value="50000">
+        <div class="hint">REER + CELI + autres placements destinés à la retraite.</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="cotisation">Contribution annuelle ($)</label>
+          <input type="number" id="cotisation" min="0" step="500" value="10000">
+        </div>
+        <div class="field">
+          <label for="rendement">Rendement annuel prévu (%)</label>
+          <input type="number" id="rendement" min="0" max="20" step="0.1" value="5.5">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="revenuSouhaite">Revenu annuel souhaité à la retraite ($)</label>
+        <input type="number" id="revenuSouhaite" min="0" step="500" value="50000">
+        <div class="hint">Avant tout autre revenu (RRQ, PSV, rente d'employeur, etc.).</div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcRetraite()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile highlight">
+          <div class="label">Capital à la retraite</div>
+          <div class="value" id="r-capital">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Années de revenu couvert</div>
+          <div class="value" id="r-annees-couv">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Cible (règle du 4 %)</div>
+          <div class="value" id="r-cible">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Écart par rapport à la cible</div>
+          <div class="value" id="r-ecart">—</div>
+        </div>
+      </div>
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <article class="article-content section">
+    <h2>Comment interpréter les résultats</h2>
+    <p>Trois nombres comptent dans une planification de retraite : le <strong>capital</strong> que vous aurez accumulé, le <strong>revenu</strong> que vous voulez en tirer chaque année, et la <strong>durée</strong> pendant laquelle ce revenu doit durer. Ce calculateur estime les trois à partir d'hypothèses simples.</p>
+
+    <h3>La règle du 4 %</h3>
+    <p>La « règle du 4 % » est un raccourci popularisé dans les années 1990 : on estime qu'un capital diversifié peut soutenir un retrait annuel d'environ 4 % de sa valeur initiale, ajusté à l'inflation, sur une retraite d'environ 30 ans. Autrement dit, pour un revenu cible de 40 000 $/an, il faudrait environ 1 000 000 $ de capital. C'est une approximation : la règle a été élaborée à partir de données américaines et d'un portefeuille équilibré actions/obligations.</p>
+
+    <h3>Pourquoi le RRQ et la PSV changent l'image</h3>
+    <p>Au Québec, votre revenu de retraite ne provient pas uniquement de votre épargne. Trois sources publiques peuvent ajouter plusieurs dizaines de milliers de dollars par année :</p>
+    <ul>
+      <li><strong>RRQ</strong> : la rente du Régime de rentes du Québec dépend de vos cotisations. Au régime de base et supplémentaire combinés, elle peut représenter jusqu'à environ 17 000–22 000 $ par année à 65 ans (selon votre historique de cotisations).</li>
+      <li><strong>PSV</strong> : la Pension de la sécurité de la vieillesse, environ 8 800 $ par année à 65 ans (avant récupération).</li>
+      <li><strong>SRG</strong> : le Supplément de revenu garanti, pour les retraités à faible revenu.</li>
+    </ul>
+    <p>Si vous prévoyez un revenu cible total de 50 000 $/an et que vous attendez environ 25 000 $/an de RRQ + PSV, il vous reste à financer 25 000 $/an avec votre épargne. Le besoin de capital est donc beaucoup plus modeste qu'on pourrait le croire au premier abord.</p>
+
+    <h3>Limites du calcul</h3>
+    <ul>
+      <li><strong>Rendement constant</strong> : la réalité est volatile. Un mauvais rendement les premières années de retraite (« risque de séquence ») peut vider un portefeuille beaucoup plus vite que la moyenne ne le suggère.</li>
+      <li><strong>Inflation non modélisée</strong> : 50 000 $ aujourd'hui n'achètent pas la même chose que 50 000 $ dans 30 ans. Pour une planification réaliste, raisonnez en dollars constants.</li>
+      <li><strong>Fiscalité du décaissement</strong> : les retraits REER/FERR sont entièrement imposables, le CELI ne l'est pas, et un compte non enregistré a une fiscalité intermédiaire (gains en capital, dividendes).</li>
+      <li><strong>Espérance de vie</strong> : sous-estimer sa longévité est l'un des risques les plus importants. Au Québec, beaucoup de retraités vivent au-delà de 90 ans.</li>
+    </ul>
+
+    <h3>Astuces pour combler un écart</h3>
+    <ol>
+      <li>Augmenter la cotisation annuelle, même modestement.</li>
+      <li>Reporter de quelques années l'âge prévu de retraite.</li>
+      <li>Considérer le report de la PSV (jusqu'à 70 ans) qui bonifie de 0,6 %/mois.</li>
+      <li>Réviser le revenu cible — souvent les dépenses baissent à la retraite (moins de transport, plus d'hypothèque payée, etc.).</li>
+      <li>Optimiser le mix REER / CELI / non enregistré pour réduire l'impôt total au décaissement.</li>
+    </ol>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>Quel est un bon objectif de revenu de retraite?</summary>
+      <p>Une règle empirique souvent citée est de viser environ 70 % de son revenu net à la retraite. Mais ce ratio varie : sans hypothèque, sans cotisations REER, et avec moins de dépenses de transport, beaucoup de retraités vivent confortablement avec moins.</p>
+    </details>
+
+    <details>
+      <summary>Faut-il inclure ma maison dans ce calcul?</summary>
+      <p>Pas dans l'épargne actuelle, à moins de prévoir vendre. La maison procure plutôt un « loyer économisé ». Si une vente fait partie de votre plan, vous pouvez ajouter le produit net estimé à votre épargne actuelle, en restant prudent sur les coûts.</p>
+    </details>
+
+    <details>
+      <summary>Quel taux de rendement est réaliste?</summary>
+      <p>Cela dépend de votre répartition. Un portefeuille équilibré 60/40 (actions/obligations) a historiquement produit autour de 5–7 % par année avant inflation. Plus la composante actions est élevée, plus le rendement attendu est élevé… mais la volatilité aussi.</p>
+    </details>
+
+    <details>
+      <summary>Et l'inflation?</summary>
+      <p>Si vos chiffres sont en dollars d'aujourd'hui, vous pouvez utiliser un rendement « réel » (rendement nominal moins inflation, soit environ 3–4 % au lieu de 5–6 %) pour obtenir une projection en pouvoir d'achat constant.</p>
+    </details>
+
+    <details>
+      <summary>À quel âge devrais-je commencer le RRQ?</summary>
+      <p>Dès 60 ans (avec pénalité), à 65 ans (taux de base) ou jusqu'à 72 ans (avec bonification). En général, retarder le RRQ est avantageux si vous êtes en bonne santé et avez d'autres ressources pour patienter, parce que la rente est ensuite plus élevée et indexée à vie.</p>
+    </details>
+  </section>
+
+  <div class="notice">
+    <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil financier ou de planification de retraite. Pour une projection sérieuse, consultez un planificateur financier (Pl. Fin.).
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculateurs</h4>
+        <ul>
+          <li><a href="/calculatrices/reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="/calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a></li>
+          <li><a href="/calculatrices/retraite.html">Retraite</a></li>
+          <li><a href="/calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>À savoir</h4>
+        <ul>
+          <li>Information générale.</li>
+          <li>Pas un conseil professionnel.</li>
+          <li>Calculs locaux dans votre navigateur.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations approximatives à des fins éducatives.
+    </div>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Quel est un bon objectif de revenu de retraite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Une règle empirique courante est de viser environ 70 % du revenu net pré-retraite, mais beaucoup de retraités vivent confortablement avec moins, surtout sans hypothèque et avec moins de dépenses de transport."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Faut-il inclure la maison dans le calcul?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pas dans l'épargne sauf si une vente est prévue. La maison procure plutôt un loyer économisé."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quel taux de rendement est réaliste?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Un portefeuille équilibré 60/40 a historiquement produit autour de 5 à 7 % par année avant inflation. Une composante actions plus élevée augmente le rendement attendu et la volatilité."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment tenir compte de l'inflation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "En raisonnant en dollars d'aujourd'hui, on peut utiliser un rendement réel (rendement nominal moins inflation, soit environ 3 à 4 %) pour obtenir une projection en pouvoir d'achat constant."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "À quel âge commencer le RRQ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Possible dès 60 ans avec pénalité, à 65 ans au taux de base, ou jusqu'à 72 ans avec bonification. Retarder est souvent avantageux si vous êtes en bonne santé et avez d'autres ressources pour patienter."
+      }
+    }
+  ]
+}
+</script>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/calculators.js"></script>
+</body>
+</html>

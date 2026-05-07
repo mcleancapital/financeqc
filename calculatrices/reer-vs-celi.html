@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur REER vs CELI Québec — Comparez votre épargne nette</title>
+<meta name="description" content="Calculateur gratuit pour comparer un REER et un CELI au Québec : valeur future, économie d'impôt, montant net après retrait. Ajustable selon vos taux d'imposition.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/reer-vs-celi.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="REER vs CELI Québec — Calculateur de comparaison">
+<meta property="og:description" content="Comparez la valeur future nette d'un REER et d'un CELI selon vos taux d'imposition actuel et futur.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <a href="/calculatrices/reer-vs-celi.html">REER vs CELI</a>
+      <a href="/calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a>
+      <a href="/calculatrices/retraite.html">Retraite</a>
+      <a href="/calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="/">Accueil</a> › <span>REER vs CELI</span>
+  </nav>
+
+  <h1>Calculateur REER vs CELI (Québec)</h1>
+  <p class="lede muted">Faut-il cotiser au REER ou au CELI? La réponse dépend surtout de votre <strong>taux marginal d'imposition aujourd'hui</strong> par rapport à celui que vous aurez <strong>au retrait</strong>. Cet outil compare les deux pour vous.</p>
+
+  <div class="notice">
+    <strong>Approximation :</strong> les calculs utilisent les taux d'imposition que vous saisissez. Ils ne tiennent pas compte des paliers progressifs réels, du RRQ, ni des prestations basées sur le revenu (PSV, SRG, allocation famille).
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field">
+        <label for="revenu">Revenu annuel imposable ($)</label>
+        <input type="number" id="revenu" min="0" step="500" value="80000">
+        <div class="hint">Sert seulement de contexte pour estimer votre taux marginal.</div>
+      </div>
+
+      <div class="field">
+        <label for="montant">Montant à investir ($)</label>
+        <input type="number" id="montant" min="0" step="100" value="10000">
+        <div class="hint">Cotisation brute identique pour les deux véhicules.</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="rendement">Rendement annuel prévu (%)</label>
+          <input type="number" id="rendement" min="0" step="0.1" value="6">
+        </div>
+        <div class="field">
+          <label for="annees">Nombre d'années</label>
+          <input type="number" id="annees" min="1" max="60" step="1" value="25">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="tauxActuel">Taux marginal actuel (%)</label>
+          <input type="number" id="tauxActuel" min="0" max="60" step="0.5" value="37.12">
+          <div class="hint">Estimation conjuguée fédéral + Québec.</div>
+        </div>
+        <div class="field">
+          <label for="tauxFutur">Taux marginal au retrait (%)</label>
+          <input type="number" id="tauxFutur" min="0" max="60" step="0.5" value="27.53">
+          <div class="hint">Souvent plus bas qu'aujourd'hui.</div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcReerCeli()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile">
+          <div class="label">Valeur future REER (brut)</div>
+          <div class="value" id="r-reer-brut">—</div>
+        </div>
+        <div class="result-tile highlight">
+          <div class="label">REER net après impôt</div>
+          <div class="value" id="r-reer-net">—</div>
+        </div>
+        <div class="result-tile highlight">
+          <div class="label">CELI net (non imposable)</div>
+          <div class="value" id="r-celi-net">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Économie d'impôt aujourd'hui</div>
+          <div class="value" id="r-economie">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">REER + remboursement réinvesti</div>
+          <div class="value" id="r-reer-plus">—</div>
+        </div>
+      </div>
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <article class="article-content section">
+    <h2>Comment interpréter les résultats</h2>
+    <p>La règle de base : <strong>si votre taux marginal sera plus bas à la retraite qu'aujourd'hui, le REER tend à gagner.</strong> Si c'est l'inverse, ou si les deux taux sont identiques, le CELI devient plus avantageux ou équivalent.</p>
+    <p>Un détail souvent oublié : pour rendre la comparaison équitable, on doit supposer que le <strong>remboursement d'impôt obtenu grâce au REER</strong> est lui aussi investi (typiquement dans un CELI). Sinon, vous comparez deux mises de fonds inégales. Ce calculateur affiche cette version « équitable » sous l'étiquette <em>REER + remboursement réinvesti</em>.</p>
+
+    <h3>Pourquoi le REER bat parfois le CELI… et inversement</h3>
+    <p>Le REER vous donne une <strong>déduction fiscale immédiate</strong> au taux marginal d'aujourd'hui, mais le retrait sera entièrement imposable plus tard. Le CELI ne donne aucune déduction, mais aucun retrait n'est imposable. Mathématiquement, lorsque les rendements sont identiques :</p>
+    <ul>
+      <li>Si <em>taux actuel = taux futur</em> → REER et CELI donnent <strong>exactement le même résultat net</strong>.</li>
+      <li>Si <em>taux actuel &gt; taux futur</em> → le REER est avantageux.</li>
+      <li>Si <em>taux actuel &lt; taux futur</em> → le CELI est avantageux.</li>
+    </ul>
+
+    <h3>Cas typiques au Québec</h3>
+    <p>Beaucoup de Québécois en mi-carrière sont dans une fourchette marginale combinée d'environ 37 % à 47 % (selon le revenu et les paliers). À la retraite, avec un revenu plus modeste tiré du REER/FERR + RRQ + PSV, le taux marginal redescend souvent autour de 26 % à 32 %. Dans ce contexte, le REER est mathématiquement avantageux — à condition que le remboursement soit réinvesti.</p>
+    <p>À l'inverse, un jeune professionnel qui gagne encore peu mais dont le revenu va monter rapidement aura souvent intérêt à privilégier le CELI au début, puis à transférer plus tard vers le REER quand le taux marginal aura grimpé.</p>
+
+    <h3>Effets que ce calculateur ne capte pas</h3>
+    <ul>
+      <li><strong>Prestations basées sur le revenu</strong> : un revenu de retraite plus bas grâce au CELI peut augmenter le SRG, l'allocation-logement, les crédits remboursables, etc.</li>
+      <li><strong>Récupération de la PSV</strong> : à partir d'un certain seuil, la Pension de la sécurité de la vieillesse est récupérée — le CELI peut alors aider à éviter ce seuil.</li>
+      <li><strong>Souplesse</strong> : le CELI permet de retirer et de remettre les cotisations l'année suivante. Le REER n'a pas cette souplesse (sauf RAP / REEP).</li>
+      <li><strong>Inflation et risque de séquence</strong> : un seul taux de rendement constant ne reflète pas la volatilité réelle des marchés.</li>
+    </ul>
+
+    <h3>Limites du calcul</h3>
+    <p>Ce calculateur utilise un taux marginal unique et constant. Or, dans la vraie vie, les taux d'imposition évoluent avec les paliers : un retrait important peut faire bondir le taux marginal cette année-là. Pour des montants élevés, il vaut mieux étaler les retraits et consulter un professionnel.</p>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>Le REER est-il toujours le meilleur choix au Québec?</summary>
+      <p>Non. Le REER bat le CELI seulement quand votre taux marginal est plus bas au retrait qu'aujourd'hui. Pour beaucoup de salariés au début de leur carrière, le CELI est plus avantageux. La bonne stratégie est souvent un mélange des deux selon l'évolution attendue du revenu.</p>
+    </details>
+
+    <details>
+      <summary>Que faire du remboursement d'impôt obtenu grâce au REER?</summary>
+      <p>Pour que la comparaison soit équitable, ce remboursement devrait être réinvesti — typiquement dans un CELI. Si vous le dépensez, le REER perd une grande partie de son avantage face au CELI.</p>
+    </details>
+
+    <details>
+      <summary>Pourquoi les taux d'imposition par défaut sont-ils 37,12 % et 27,53 %?</summary>
+      <p>Ce sont des ordres de grandeur usuels au Québec : un taux marginal combiné fédéral + provincial typique à mi-carrière, et un taux marginal plus modeste à la retraite. Vous devriez ajuster ces valeurs à votre situation réelle pour des résultats plus précis.</p>
+    </details>
+
+    <details>
+      <summary>Le calculateur tient-il compte des cotisations au RRQ ou de la PSV?</summary>
+      <p>Non. Cette première version reste volontairement simple. Les prestations basées sur le revenu (PSV, SRG, allocation logement, etc.) peuvent influencer fortement la décision REER vs CELI à la retraite, surtout pour les revenus modestes. Consultez un professionnel pour ces situations.</p>
+    </details>
+
+    <details>
+      <summary>Que se passe-t-il si je dépasse mes droits de cotisation REER ou CELI?</summary>
+      <p>Vous devenez assujetti à une pénalité de 1 % par mois sur l'excédent (au-delà des 2 000 $ de marge pour le REER). Avant de cotiser des montants importants, vérifiez vos droits sur l'avis de cotisation de l'ARC.</p>
+    </details>
+  </section>
+
+  <div class="notice">
+    <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil fiscal, financier ou juridique. Les calculs sont des approximations à des fins éducatives.
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculateurs</h4>
+        <ul>
+          <li><a href="/calculatrices/reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="/calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a></li>
+          <li><a href="/calculatrices/retraite.html">Retraite</a></li>
+          <li><a href="/calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>À savoir</h4>
+        <ul>
+          <li>Information générale.</li>
+          <li>Pas un conseil professionnel.</li>
+          <li>Calculs locaux dans votre navigateur.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations approximatives à des fins éducatives.
+    </div>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Le REER est-il toujours le meilleur choix au Québec?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Le REER bat le CELI seulement quand votre taux marginal est plus bas au retrait qu'aujourd'hui. Pour beaucoup de salariés au début de leur carrière, le CELI est plus avantageux."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Que faire du remboursement d'impôt obtenu grâce au REER?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pour que la comparaison soit équitable, ce remboursement devrait être réinvesti, typiquement dans un CELI. Si vous le dépensez, le REER perd une grande partie de son avantage face au CELI."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi les taux d'imposition par défaut sont-ils 37,12 % et 27,53 %?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ce sont des ordres de grandeur usuels au Québec : un taux marginal combiné fédéral + provincial typique à mi-carrière, et un taux marginal plus modeste à la retraite. Vous pouvez les ajuster."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le calculateur tient-il compte du RRQ ou de la PSV?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Cette version reste volontairement simple. Les prestations basées sur le revenu peuvent influencer la décision REER vs CELI à la retraite, surtout pour les revenus modestes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Que se passe-t-il si je dépasse mes droits de cotisation REER ou CELI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vous payez une pénalité de 1 % par mois sur l'excédent (avec une marge de 2 000 $ pour le REER). Vérifiez vos droits sur votre avis de cotisation de l'ARC avant de cotiser des montants importants."
+      }
+    }
+  ]
+}
+</script>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/calculators.js"></script>
+</body>
+</html>

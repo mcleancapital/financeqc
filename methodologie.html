@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Méthodologie de FinanceQc — Comment nos calculateurs fonctionnent</title>
+<meta name="description" content="Comment les calculateurs de FinanceQc sont construits : hypothèses, taux marginal vs effectif, limites fiscales, sources et avertissements. Tout est expliqué de façon transparente.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.financeqc.ca/methodologie.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Méthodologie de FinanceQc">
+<meta property="og:description" content="Comment nos calculateurs fonctionnent, et pourquoi les résultats sont approximatifs.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.financeqc.ca/"},
+    {"@type": "ListItem", "position": 2, "name": "Méthodologie", "item": "https://www.financeqc.ca/methodologie.html"}
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="./"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <div class="nav-group">
+        <a href="calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="calculatrices/reer-vs-celi.html">REER vs CELI</a>
+          <a href="calculatrices/rrq.html">Rente RRQ</a>
+          <a href="calculatrices/oas-gis.html">PSV + SRG</a>
+          <a href="calculatrices/retraite.html">Retraite</a>
+          <a href="calculatrices/impot-quebec.html">Impôt Québec</a>
+          <a href="calculatrices/valeur-nette.html">Valeur nette</a>
+          <a href="calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="scenarios.html">Scénarios</a>
+      <a href="glossaire.html">Glossaire</a>
+      <a href="a-propos.html">À propos</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero-compact">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+      <a href="./">Accueil</a> › <span>Méthodologie</span>
+    </nav>
+    <span class="kicker">Méthodologie</span>
+    <h1>Comment nos calculateurs fonctionnent</h1>
+    <p class="lede">Toutes les hypothèses, formules et approximations utilisées sur FinanceQc, expliquées en clair. Si vous voulez savoir d'où vient un chiffre, c'est ici.</p>
+  </div>
+</section>
+
+<main class="container">
+
+  <article class="article-content">
+
+    <nav class="toc" aria-label="Table des matières">
+      <h2>Sur cette page</h2>
+      <ol>
+        <li><a href="#principes">Nos principes de calcul</a></li>
+        <li><a href="#approximation">Pourquoi les résultats sont approximatifs</a></li>
+        <li><a href="#taux">Taux marginal, taux moyen, taux effectif</a></li>
+        <li><a href="#hypotheses">Hypothèses modifiables</a></li>
+        <li><a href="#limites">Limites fiscales et plafonds</a></li>
+        <li><a href="#sources">Sources et mises à jour</a></li>
+        <li><a href="#professionnel">Quand consulter un professionnel</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="principes">Nos principes de calcul</h2>
+    <p>Nos calculateurs suivent quatre règles simples :</p>
+    <ol>
+      <li><strong>Tout est local.</strong> Les calculs s'exécutent dans votre navigateur en JavaScript. Aucun appel réseau, aucune donnée envoyée.</li>
+      <li><strong>Les formules sont publiques.</strong> Cette page documente l'essentiel. Pour le détail, le code source est librement consultable sur le dépôt GitHub du projet.</li>
+      <li><strong>Les hypothèses sont visibles.</strong> Lorsqu'un taux fiscal ou un plafond est intégré, il est affiché. Lorsqu'il est paramétrable, vous pouvez le modifier.</li>
+      <li><strong>Les bornes sont raisonnables.</strong> Avec des entrées extrêmes, le calculateur reste dans des ordres de grandeur sensés ou affiche un message clair.</li>
+    </ol>
+
+    <h2 id="approximation">Pourquoi les résultats sont approximatifs</h2>
+    <p>Un calculateur web ne peut pas reproduire la complexité totale de votre situation fiscale. Les approximations principales :</p>
+    <ul>
+      <li><strong>Crédits et déductions personnels</strong> non pris en compte au cas par cas (situation familiale, dépenses médicales, frais de garde, dons, etc.). Nos calculateurs intègrent les principaux crédits universels (de base, en âge, pour pension, etc.) lorsque pertinents — pas tous les crédits ciblés.</li>
+      <li><strong>Plusieurs sources de revenus</strong> peuvent interagir (dividendes + salaire + gains en capital + revenu de location). Nos calculateurs simplifient en traitant les sources principales.</li>
+      <li><strong>Évolution des paramètres fiscaux</strong> dans le futur : nous projetons à taux constant. La réalité pourra différer.</li>
+      <li><strong>Rendements futurs</strong> projetés à un taux constant. Les marchés sont volatils.</li>
+      <li><strong>Inflation</strong> projetée à un taux constant.</li>
+    </ul>
+    <p>Conséquence : un écart de quelques centaines à quelques milliers de dollars entre nos estimations et la réalité est attendu. Pour comparer deux scénarios, l'<em>écart relatif</em> reste fiable même si le chiffre absolu varie.</p>
+
+    <h2 id="taux">Taux marginal, taux moyen, taux effectif</h2>
+    <p>Trois notions à ne jamais confondre :</p>
+
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Notion</th><th>Définition</th><th>Quand l'utiliser</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Taux marginal</strong></td>
+            <td>Le taux qui s'applique au prochain dollar gagné (ou cotisé).</td>
+            <td>Décisions REER vs CELI, déductions, ajout de revenu.</td>
+          </tr>
+          <tr>
+            <td><strong>Taux moyen</strong></td>
+            <td>Impôt total ÷ revenu total.</td>
+            <td>Comparer une charge fiscale globale entre deux années.</td>
+          </tr>
+          <tr>
+            <td><strong>Taux effectif</strong></td>
+            <td>Variante du taux moyen tenant compte des crédits, retenues sociales, RQAP, etc.</td>
+            <td>Évaluer son revenu net réellement disponible.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Exemple québécois (2025, ordres de grandeur) : un revenu d'emploi de 80 000 $ entraîne approximativement un taux moyen autour de 23 % et un taux marginal autour de 37 %. Cotiser 5 000 $ au REER « économise » donc environ <strong>5 000 × 37 % = 1 850 $</strong> en impôt, pas <strong>5 000 × 23 %</strong>. C'est le marginal qui compte pour les décisions à la marge.</p>
+
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M12 22v-2"/><circle cx="12" cy="12" r="9"/></svg>
+      <div>
+        <strong>Règle de poche :</strong> pour décider <em>si</em> vous cotisez, regardez le taux marginal. Pour décider <em>combien d'impôt vous payez réellement</em>, regardez le taux moyen ou effectif.
+      </div>
+    </div>
+
+    <h2 id="hypotheses">Hypothèses modifiables</h2>
+    <p>Plusieurs calculateurs vous permettent de modifier les hypothèses clés. Quand un champ est éditable, c'est qu'on considère que la valeur est <em>une opinion</em>, pas une vérité.</p>
+    <ul>
+      <li><strong>Rendement annuel</strong> : par défaut entre 4 % et 6 % selon le calculateur. Ce sont des moyennes prudentes pour un portefeuille équilibré, après frais.</li>
+      <li><strong>Inflation</strong> : par défaut 2 % à 2,5 %. La cible de la Banque du Canada est 2 %.</li>
+      <li><strong>Taux marginal</strong> : par défaut un taux médian québécois (typiquement 37 %). À ajuster selon votre revenu réel.</li>
+      <li><strong>Âge de retraite</strong>, <strong>années de cotisation</strong>, <strong>amortissement hypothécaire</strong>, etc.</li>
+    </ul>
+    <p>Si vous changez plusieurs hypothèses à la fois, regardez <em>l'écart entre les scénarios</em> plutôt que les valeurs absolues. C'est l'écart qui guide la décision.</p>
+
+    <h2 id="limites">Limites fiscales et plafonds</h2>
+    <p>Nos calculateurs intègrent les plafonds suivants (mis à jour au moins une fois par année) :</p>
+    <ul>
+      <li><strong>Plafond REER</strong> : 18 % du revenu gagné de l'année précédente, jusqu'à un maximum annuel.</li>
+      <li><strong>Plafond CELI</strong> : montant annuel cumulatif depuis 2009 (variable selon votre âge et votre éligibilité).</li>
+      <li><strong>Plafond CELIAPP</strong> : 8 000 $ par an, 40 000 $ à vie, durée maximale de 15 ans.</li>
+      <li><strong>Maximum des gains admissibles RRQ</strong> et taux de cotisation.</li>
+      <li><strong>Plafond PSV</strong> et seuil de récupération.</li>
+    </ul>
+    <p>Si une valeur est obsolète, signalez-la-nous : nous mettons à jour à chaque changement annoncé.</p>
+
+    <h2 id="sources">Sources et mises à jour</h2>
+    <p>Les principales sources que nous consultons :</p>
+    <ul>
+      <li>Revenu Québec et Agence du revenu du Canada — taux d'imposition, crédits, plafonds.</li>
+      <li>Retraite Québec — paramètres du RRQ.</li>
+      <li>Service Canada — paramètres PSV, SRG.</li>
+      <li>Banque du Canada — cible d'inflation.</li>
+      <li>Statistique Canada — données de revenu et d'inflation historiques.</li>
+    </ul>
+    <p>Les calculateurs sont mis à jour au moins une fois par an, et à chaque modification fiscale majeure annoncée.</p>
+
+    <h2 id="professionnel">Quand consulter un professionnel</h2>
+    <p>Nos calculateurs vous donnent <strong>l'ordre de grandeur</strong> et vous aident à <strong>comparer deux scénarios</strong>. Ils ne remplacent pas un professionnel pour les décisions suivantes :</p>
+    <ul>
+      <li><strong>Planification de retraite formelle</strong> à partir de 50 ans (planificateur financier).</li>
+      <li><strong>Stratégie de rémunération</strong> pour entreprise (comptable / fiscaliste).</li>
+      <li><strong>Succession et fiducie</strong> (notaire et fiscaliste).</li>
+      <li><strong>Gestion d'un héritage important</strong> ou vente d'entreprise (équipe : fiscaliste + planificateur).</li>
+      <li><strong>Décisions immobilières</strong> impliquant des montants importants (courtier hypothécaire, comptable).</li>
+    </ul>
+    <p>Un calculateur web est un point de départ, pas une conclusion.</p>
+
+    <div class="notice">
+      <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil fiscal, financier ou juridique. Pour une décision importante, consultez un professionnel autorisé. Ces calculs sont fournis à titre indicatif seulement.
+    </div>
+
+    <h2 id="suivants">Pour aller plus loin</h2>
+    <ul>
+      <li><a href="glossaire.html">Glossaire financier québécois</a> — définitions courtes de 60 termes.</li>
+      <li><a href="scenarios.html">Scénarios québécois</a> — comment combiner les outils selon votre situation.</li>
+      <li><a href="a-propos.html">À propos de FinanceQc</a> — notre mission et notre indépendance.</li>
+      <li><a href="calculatrices/">Toutes les calculatrices</a></li>
+    </ul>
+
+  </article>
+
+</main>
+
+<section class="trust-strip" aria-label="Engagements">
+  <div class="container">
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>
+      Aucune donnée transmise
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Calculs dans votre navigateur
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+      Sans inscription
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      Information générale seulement
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.8 4.6L18 8l-3.6 2.4L15.6 15 12 12.7 8.4 15l1.2-4.6L6 8l4.2-1.4z"/></svg>
+      Conçu pour les réalités fiscales du Québec
+    </span>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois. Faits pour comprendre, pas pour vendre.</p>
+      </div>
+      <div>
+        <h4>Outils</h4>
+        <ul>
+          <li><a href="calculatrices/">Toutes les calculatrices</a></li>
+          <li><a href="guides/">Guides détaillés</a></li>
+          <li><a href="scenarios.html">Scénarios québécois</a></li>
+          <li><a href="glossaire.html">Glossaire</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Le site</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="methodologie.html">Méthodologie</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Les calculs proposés sont des estimations à titre indicatif seulement.
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

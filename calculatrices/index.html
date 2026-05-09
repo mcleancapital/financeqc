@@ -22,11 +22,14 @@
         <a href="../calculatrices/">Calculatrices</a>
         <div class="nav-dropdown">
           <a href="reer-vs-celi.html">REER vs CELI</a>
+          <a href="celiapp.html">CELIAPP</a>
           <a href="rrq.html">Rente RRQ</a>
           <a href="oas-gis.html">PSV + SRG</a>
           <a href="retraite.html">Retraite</a>
           <a href="impot-quebec.html">Impôt Québec</a>
           <a href="valeur-nette.html">Valeur nette</a>
+          <a href="epargne-mensuelle.html">Épargne mensuelle</a>
+          <a href="inflation.html">Inflation</a>
           <a href="salaire-vs-dividendes.html">Salaire vs dividendes</a>
           <a href="hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
         </div>
@@ -40,9 +43,10 @@
           <a href="../guides/acheter-ou-louer.html">Acheter ou louer</a>
         </div>
       </div>
-      <a href="../retraite/">Retraite</a>
-      <a href="../impot/">Impôt</a>
-      <a href="../entrepreneurs/">Entrepreneurs</a>
+      <a href="../questions/">Questions</a>
+      <a href="../scenarios.html">Scénarios</a>
+      <a href="../glossaire.html">Glossaire</a>
+      <a href="../a-propos.html">À propos</a>
     </nav>
   </div>
 </header>
@@ -53,11 +57,16 @@
       <a href="../">Accueil</a> › <span>Calculatrices</span>
     </nav>
     <h1>Toutes les calculatrices financières</h1>
-    <p class="lede">Huit outils gratuits pour estimer rapidement vos décisions financières au Québec : épargne, retraite, fiscalité, patrimoine, immobilier. Tout fonctionne dans votre navigateur — vos chiffres ne quittent pas votre appareil.</p>
+    <p class="lede">Onze outils gratuits pour estimer rapidement vos décisions financières au Québec : épargne, retraite, fiscalité, patrimoine, immobilier, inflation. Tout fonctionne dans votre navigateur — vos chiffres ne quittent pas votre appareil.</p>
   </div>
 </section>
 
 <main class="container section">
+
+  <div class="search-box" data-search-base="../">
+    <input type="search" placeholder="Rechercher une calculatrice, un guide, un terme…" aria-label="Rechercher">
+    <ul class="search-results" role="listbox" aria-label="Résultats de recherche"></ul>
+  </div>
 
   <p class="muted">Les calculatrices ci-dessous donnent des ordres de grandeur. Elles ne remplacent pas un comptable ou un planificateur financier, mais elles permettent de rapidement situer une décision financière dans son contexte québécois (paliers d'imposition fédéraux + Québec, RRQ, PSV, fiscalité corporative SPCC).</p>
 
@@ -70,11 +79,31 @@
       <p>Comparez la valeur future nette de cotiser au REER ou au CELI selon vos taux d'imposition actuel et futur.</p>
       <span class="arrow">Ouvrir →</span>
     </a>
-    <a class="calc-card" href="impot-quebec.html">
+    <a class="calc-card" href="celiapp.html">
       <span class="badge badge-new">Nouveau</span>
+      <span class="tag">Épargne</span>
+      <h3>CELIAPP</h3>
+      <p>Estimez votre économie d'impôt et la mise de fonds future avec le compte d'épargne pour première propriété.</p>
+      <span class="arrow">Ouvrir →</span>
+    </a>
+    <a class="calc-card" href="impot-quebec.html">
       <span class="tag">Fiscalité</span>
       <h3>Impôt Québec</h3>
       <p>Estimateur d'impôt simplifié : combinaison salaire, dividendes, gains en capital et REER. Calcule taux marginal et effectif.</p>
+      <span class="arrow">Ouvrir →</span>
+    </a>
+    <a class="calc-card" href="epargne-mensuelle.html">
+      <span class="badge badge-new">Nouveau</span>
+      <span class="tag">Épargne</span>
+      <h3>Combien épargner par mois</h3>
+      <p>Pour un objectif financier donné, calculez la cotisation mensuelle requise et la sensibilité au rendement.</p>
+      <span class="arrow">Ouvrir →</span>
+    </a>
+    <a class="calc-card" href="inflation.html">
+      <span class="badge badge-new">Nouveau</span>
+      <span class="tag">Pouvoir d'achat</span>
+      <h3>Inflation</h3>
+      <p>Combien votre argent vaudra-t-il dans 10, 20 ou 30 ans? Mesurez la perte de pouvoir d'achat à différents taux.</p>
       <span class="arrow">Ouvrir →</span>
     </a>
   </div>
@@ -137,6 +166,16 @@
   </section>
 </main>
 
+<section class="trust-strip" aria-label="Engagements">
+  <div class="container">
+    <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg> Aucune donnée transmise</span>
+    <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> Calculs dans votre navigateur</span>
+    <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Sans inscription</span>
+    <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg> Information générale seulement</span>
+    <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.8 4.6L18 8l-3.6 2.4L15.6 15 12 12.7 8.4 15l1.2-4.6L6 8l4.2-1.4z"/></svg> Conçu pour les réalités fiscales du Québec</span>
+  </div>
+</section>
+
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
@@ -176,5 +215,7 @@
 </button>
 
 <script src="../assets/js/main.js"></script>
+<script src="../assets/js/search-data.js"></script>
+<script src="../assets/js/search.js"></script>
 </body>
 </html>

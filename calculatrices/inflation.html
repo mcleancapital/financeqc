@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur d'inflation Québec — Pouvoir d'achat futur et perte de valeur</title>
+<meta name="description" content="Calculateur d'inflation gratuit : combien vaudra votre argent dans 10, 20 ou 30 ans? Estimez la perte de pouvoir d'achat et le montant nécessaire pour conserver le même niveau de vie au Québec.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/inflation.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculateur d'inflation — Québec">
+<meta property="og:description" content="Mesurez l'impact de l'inflation sur votre pouvoir d'achat futur.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.financeqc.ca/"},
+    {"@type": "ListItem", "position": 2, "name": "Calculatrices", "item": "https://www.financeqc.ca/calculatrices/"},
+    {"@type": "ListItem", "position": 3, "name": "Inflation", "item": "https://www.financeqc.ca/calculatrices/inflation.html"}
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="../"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <div class="nav-group">
+        <a href="../calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="reer-vs-celi.html">REER vs CELI</a>
+          <a href="celiapp.html">CELIAPP</a>
+          <a href="rrq.html">Rente RRQ</a>
+          <a href="oas-gis.html">PSV + SRG</a>
+          <a href="retraite.html">Retraite</a>
+          <a href="impot-quebec.html">Impôt Québec</a>
+          <a href="valeur-nette.html">Valeur nette</a>
+          <a href="epargne-mensuelle.html">Épargne mensuelle</a>
+          <a href="inflation.html">Inflation</a>
+          <a href="salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="../guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="../guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="../guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="../guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="../scenarios.html">Scénarios</a>
+      <a href="../glossaire.html">Glossaire</a>
+      <a href="../a-propos.html">À propos</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="../">Accueil</a> › <a href="./">Calculatrices</a> › <span>Inflation</span>
+  </nav>
+
+  <h1>Calculateur d'inflation (Québec)</h1>
+  <p class="lede muted">Combien votre argent vaudra-t-il dans 10, 20 ou 30 ans? L'inflation érode silencieusement le pouvoir d'achat. Cet outil vous montre l'écart entre la valeur nominale et la valeur réelle d'un montant.</p>
+
+  <div class="notice">
+    <strong>Référence :</strong> la cible d'inflation de la Banque du Canada est <strong>2 % par année</strong>. La moyenne historique des 30 dernières années oscille autour de 2 % à 2,5 %. Les pics ponctuels (2022 : 6,8 %) sont la rare exception, pas la norme.
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field">
+        <label for="montant">Montant aujourd'hui ($)</label>
+        <input type="number" id="montant" min="0" step="100" value="100000">
+        <div class="hint">Capital, salaire, coût de vie annuel — selon ce que vous voulez projeter.</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="taux">Taux d'inflation annuel (%)</label>
+          <input type="number" id="taux" min="0" max="20" step="0.1" value="2.5">
+          <div class="hint">Cible Banque du Canada : 2 %.</div>
+        </div>
+        <div class="field">
+          <label for="annees">Nombre d'années</label>
+          <input type="number" id="annees" min="1" max="100" step="1" value="20">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcInflation()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile highlight">
+          <div class="label">Pouvoir d'achat dans le futur</div>
+          <div class="value" id="r-pouvoir-achat">—</div>
+        </div>
+        <div class="result-tile highlight">
+          <div class="label">Montant nécessaire pour le même niveau de vie</div>
+          <div class="value" id="r-equivalent">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Perte de pouvoir d'achat ($)</div>
+          <div class="value" id="r-perte">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Perte de pouvoir d'achat (%)</div>
+          <div class="value" id="r-perte-pct">—</div>
+        </div>
+      </div>
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <article class="article-content section">
+    <h2>Comment lire ces résultats</h2>
+    <p>Deux façons complémentaires de mesurer l'inflation :</p>
+    <ul>
+      <li><strong>Pouvoir d'achat futur</strong> : combien votre montant d'aujourd'hui « vaudra » dans le futur, exprimé en dollars d'aujourd'hui. Un 100 000 $ qui ne grandit pas perd presque la moitié de son pouvoir d'achat sur 30 ans à 2,5 % d'inflation.</li>
+      <li><strong>Montant équivalent futur</strong> : combien il vous faudra <em>dans le futur</em> pour acheter ce qui coûte 100 000 $ aujourd'hui. À 2,5 % sur 30 ans, c'est environ 210 000 $.</li>
+    </ul>
+
+    <h3>Pourquoi l'inflation compte (encore plus à la retraite)</h3>
+    <p>Si vous prévoyez retirer 60 000 $ par année à la retraite et que vous prenez votre retraite dans 25 ans, ce n'est pas 60 000 $ qu'il vous faut <em>en dollars d'aujourd'hui</em> — c'est <strong>l'équivalent de 60 000 $ dans 25 ans</strong>, soit environ 110 000 $ à 2,5 % d'inflation. Une retraite plate à 60 000 $ pendant 25 ans signifie en fait <em>vivre avec environ 32 500 $ de pouvoir d'achat à la fin</em>.</p>
+    <p>C'est pourquoi les rentes indexées (RRQ, PSV, certains régimes de retraite à prestations déterminées) valent considérablement plus que les rentes non indexées.</p>
+
+    <h3>Inflation vs rendement : ce qui compte vraiment</h3>
+    <p>Un rendement de 6 % avec une inflation de 4 % donne un <strong>rendement réel</strong> d'environ 1,9 % seulement. Un rendement de 4 % avec une inflation de 2 % donne aussi 1,9 %. C'est le rendement <em>réel</em> — net d'inflation — qui détermine combien votre patrimoine grandit en pouvoir d'achat.</p>
+
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M12 22v-2"/><circle cx="12" cy="12" r="9"/></svg>
+      <div>
+        <strong>Règle de poche :</strong> à 2 % d'inflation, un montant double en environ 35 ans. À 3 %, en 24 ans. À 6 %, en 12 ans.
+      </div>
+    </div>
+
+    <h3>Limites de ce calculateur</h3>
+    <ul>
+      <li>Le taux d'inflation est constant. Dans la vraie vie, il varie d'année en année.</li>
+      <li>L'inflation n'est pas la même pour tout le monde : panier alimentaire, logement, automobile, énergie évoluent à des rythmes différents. L'IPC est une moyenne pondérée nationale.</li>
+      <li>Au Québec, les loyers, l'électricité (Hydro-Québec) et certaines tarifications gouvernementales peuvent évoluer différemment de l'IPC fédéral.</li>
+    </ul>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>Quel taux d'inflation utiliser pour mes projections?</summary>
+      <p>Pour des projections prudentes : 2,5 %. Pour rester conservateur sans être pessimiste : 2 %. Si vous voulez tester un scénario inflationniste : 3 % à 4 %. Évitez d'utiliser le pic ponctuel d'une mauvaise année comme hypothèse de long terme.</p>
+    </details>
+
+    <details>
+      <summary>Mon salaire suit-il l'inflation?</summary>
+      <p>Pas automatiquement. Certains contrats syndicaux (secteur public québécois, RREGOP, plusieurs grandes entreprises) prévoient des clauses d'indexation, mais la majorité des emplois exigent des négociations annuelles. Sur 30 ans, plusieurs Québécois constatent que leur salaire réel a stagné même si le nominal a doublé.</p>
+    </details>
+
+    <details>
+      <summary>Comment l'inflation affecte-t-elle mes dettes?</summary>
+      <p>L'inflation érode aussi la valeur réelle des dettes à taux fixe. Un emprunt de 200 000 $ à 4 % sur 25 ans est plus facile à rembourser à long terme si vos revenus suivent l'inflation. C'est l'une des raisons pour lesquelles l'immobilier financé par hypothèque a historiquement été un bon coup en période de forte inflation.</p>
+    </details>
+
+    <details>
+      <summary>Le RRQ et la PSV sont-ils indexés?</summary>
+      <p>Oui. Le RRQ est ajusté annuellement selon l'IPC. La PSV est ajustée trimestriellement. Le SRG est ajusté trimestriellement. Ces prestations préservent donc un pouvoir d'achat constant, ce qui est précieux à la retraite.</p>
+    </details>
+
+    <details>
+      <summary>Quelle différence entre IPC et inflation « ressentie »?</summary>
+      <p>L'IPC mesure une moyenne pondérée d'un panier représentatif. Si vos dépenses sont concentrées sur des postes en hausse rapide (loyer, alimentation), votre inflation personnelle peut être plus élevée que l'IPC officiel.</p>
+    </details>
+  </section>
+
+  <div class="notice">
+    <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil financier. Pour planifier votre retraite ou un objectif important, consultez un professionnel autorisé.
+  </div>
+
+  <section class="related" aria-labelledby="rel-title">
+    <h2 id="rel-title">Calculateurs et guides reliés</h2>
+    <div class="related-grid">
+      <a class="related-card" href="retraite.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Capital retraite</div>
+      </a>
+      <a class="related-card" href="epargne-mensuelle.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Combien épargner par mois</div>
+      </a>
+      <a class="related-card" href="reer-vs-celi.html">
+        <div class="label">Calculateur</div>
+        <div class="title">REER vs CELI</div>
+      </a>
+      <a class="related-card" href="../guides/retraite-quebec.html">
+        <div class="label">Guide</div>
+        <div class="title">Retraite au Québec : combien faut-il?</div>
+      </a>
+      <a class="related-card" href="../glossaire.html#inflation">
+        <div class="label">Glossaire</div>
+        <div class="title">Inflation — définition</div>
+      </a>
+      <a class="related-card" href="../glossaire.html#rendement-reel">
+        <div class="label">Glossaire</div>
+        <div class="title">Rendement réel</div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<section class="trust-strip" aria-label="Engagements">
+  <div class="container">
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>
+      Aucune donnée transmise
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Calculs dans votre navigateur
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+      Sans inscription
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      Information générale seulement
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.8 4.6L18 8l-3.6 2.4L15.6 15 12 12.7 8.4 15l1.2-4.6L6 8l4.2-1.4z"/></svg>
+      Conçu pour les réalités fiscales du Québec
+    </span>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculatrices</h4>
+        <ul>
+          <li><a href="reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="celiapp.html">CELIAPP</a></li>
+          <li><a href="rrq.html">Rente RRQ</a></li>
+          <li><a href="oas-gis.html">PSV + SRG</a></li>
+          <li><a href="impot-quebec.html">Impôt Québec</a></li>
+          <li><a href="epargne-mensuelle.html">Épargne mensuelle</a></li>
+          <li><a href="inflation.html">Inflation</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="../guides/">Guides</a></li>
+          <li><a href="../scenarios.html">Scénarios</a></li>
+          <li><a href="../glossaire.html">Glossaire</a></li>
+          <li><a href="../a-propos.html">À propos</a></li>
+          <li><a href="../methodologie.html">Méthodologie</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations à titre indicatif seulement.
+    </div>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Quel taux d'inflation utiliser pour mes projections?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pour des projections prudentes, 2,5 %. Pour rester conservateur, 2 %. Pour tester un scénario inflationniste, 3 % à 4 %. Évitez d'utiliser un pic ponctuel comme hypothèse de long terme."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le RRQ et la PSV sont-ils indexés?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Le RRQ est ajusté annuellement selon l'IPC, la PSV trimestriellement, le SRG trimestriellement aussi. Ces prestations préservent un pouvoir d'achat constant à la retraite."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment l'inflation affecte-t-elle mes dettes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L'inflation érode la valeur réelle des dettes à taux fixe. Une hypothèque devient plus facile à rembourser si les revenus suivent l'inflation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelle différence entre IPC et inflation ressentie?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L'IPC est une moyenne pondérée d'un panier représentatif. Si vos dépenses sont concentrées sur le loyer ou l'alimentation, votre inflation personnelle peut être plus élevée que l'IPC officiel."
+      }
+    }
+  ]
+}
+</script>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script src="../assets/js/main.js"></script>
+<script>
+function calcInflation() {
+  const montant = readNumber("montant", 0);
+  const taux = readNumber("taux", 2.5);
+  const annees = Math.max(1, readNumber("annees", 20) | 0);
+
+  const pouvoirAchat = realPurchasingPower(montant, taux, annees);
+  const equivalent = inflatedAmount(montant, taux, annees);
+  const perte = montant - pouvoirAchat;
+  const pertePct = montant > 0 ? perte / montant : 0;
+
+  setResult("r-pouvoir-achat", pouvoirAchat);
+  setResult("r-equivalent", equivalent);
+  setResult("r-perte", perte);
+  setResult("r-perte-pct", pertePct, formatPercent);
+
+  document.getElementById("results").hidden = false;
+
+  setSummary("r-summary",
+    `<strong>Lecture :</strong> ${formatCAD(montant)} aujourd'hui aura le pouvoir d'achat ` +
+    `d'environ <strong>${formatCAD(pouvoirAchat)}</strong> dans ${annees} ans à ${formatPercent(taux/100, 1)} d'inflation. ` +
+    `Pour acheter dans le futur ce qui coûte ${formatCAD(montant)} aujourd'hui, il vous faudra environ ` +
+    `<strong>${formatCAD(equivalent)}</strong>. ` +
+    `La perte de pouvoir d'achat est d'environ ${formatCAD(perte)}, soit ${formatPercent(pertePct, 0)} du montant initial.`);
+}
+</script>
+</body>
+</html>

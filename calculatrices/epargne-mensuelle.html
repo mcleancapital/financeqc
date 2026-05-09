@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Combien épargner par mois? — Calculateur d'objectif financier (Québec)</title>
+<meta name="description" content="Calculez le montant mensuel à épargner pour atteindre un objectif financier (mise de fonds, retraite, projet) au Québec. Sensibilité au rendement, capital final projeté.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/epargne-mensuelle.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculateur d'épargne mensuelle">
+<meta property="og:description" content="Combien faut-il épargner par mois pour atteindre votre objectif?">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.financeqc.ca/"},
+    {"@type": "ListItem", "position": 2, "name": "Calculatrices", "item": "https://www.financeqc.ca/calculatrices/"},
+    {"@type": "ListItem", "position": 3, "name": "Épargne mensuelle", "item": "https://www.financeqc.ca/calculatrices/epargne-mensuelle.html"}
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="../"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <div class="nav-group">
+        <a href="../calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="reer-vs-celi.html">REER vs CELI</a>
+          <a href="celiapp.html">CELIAPP</a>
+          <a href="rrq.html">Rente RRQ</a>
+          <a href="oas-gis.html">PSV + SRG</a>
+          <a href="retraite.html">Retraite</a>
+          <a href="impot-quebec.html">Impôt Québec</a>
+          <a href="valeur-nette.html">Valeur nette</a>
+          <a href="epargne-mensuelle.html">Épargne mensuelle</a>
+          <a href="inflation.html">Inflation</a>
+          <a href="salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="../guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="../guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="../guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="../guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="../scenarios.html">Scénarios</a>
+      <a href="../glossaire.html">Glossaire</a>
+      <a href="../a-propos.html">À propos</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="../">Accueil</a> › <a href="./">Calculatrices</a> › <span>Épargne mensuelle</span>
+  </nav>
+
+  <h1>Combien épargner par mois?</h1>
+  <p class="lede muted">Vous avez un objectif financier — mise de fonds, voyage, fonds d'urgence, capital retraite — et vous voulez savoir combien il faut mettre de côté chaque mois pour y arriver. Cet outil le calcule, et vous montre l'effet du rendement sur votre effort.</p>
+
+  <div class="notice">
+    <strong>Approximation :</strong> les calculs supposent une cotisation mensuelle constante et un rendement annuel composé mensuellement. L'inflation n'est pas prise en compte (l'objectif est en dollars d'aujourd'hui). Pour un objectif éloigné de plus de 10 ans, considérez aussi notre <a href="inflation.html">calculateur d'inflation</a>.
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field">
+        <label for="objectif">Objectif financier ($)</label>
+        <input type="number" id="objectif" min="0" step="1000" value="100000">
+        <div class="hint">Ex. : 50 000 $ pour mise de fonds, 1 000 000 $ pour retraite.</div>
+      </div>
+
+      <div class="field">
+        <label for="deja">Montant déjà épargné ($)</label>
+        <input type="number" id="deja" min="0" step="500" value="10000">
+        <div class="hint">Capital de départ, qui croîtra aussi avec le rendement.</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="annees">Nombre d'années</label>
+          <input type="number" id="annees" min="1" max="60" step="1" value="10">
+        </div>
+        <div class="field">
+          <label for="rendement">Rendement annuel prévu (%)</label>
+          <input type="number" id="rendement" min="0" max="20" step="0.1" value="5">
+          <div class="hint">5 % = portefeuille équilibré prudent. 7 % = portefeuille plus orienté actions.</div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcEpargne()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile highlight">
+          <div class="label">Cotisation mensuelle requise</div>
+          <div class="value" id="r-mensuel">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Capital final projeté</div>
+          <div class="value" id="r-final">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Total cotisé sur la période</div>
+          <div class="value" id="r-total-cotise">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Croissance générée par le rendement</div>
+          <div class="value" id="r-croissance">—</div>
+        </div>
+      </div>
+
+      <h3 class="mt-3">Sensibilité au rendement</h3>
+      <p class="muted" style="margin-bottom:0.6rem;">Mêmes objectif, durée et capital de départ — seul le rendement change.</p>
+      <div class="results-grid">
+        <div class="result-tile">
+          <div class="label">À <span id="r-tag-low">—</span> de rendement</div>
+          <div class="value" id="r-mensuel-low">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">À <span id="r-tag-mid">—</span> (votre saisie)</div>
+          <div class="value" id="r-mensuel-mid">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">À <span id="r-tag-high">—</span> de rendement</div>
+          <div class="value" id="r-mensuel-high">—</div>
+        </div>
+      </div>
+
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <article class="article-content section">
+    <h2>Comment lire les résultats</h2>
+    <p>La <strong>cotisation mensuelle requise</strong> est le montant fixe à mettre de côté chaque mois pour atteindre votre objectif à la date prévue, en supposant le rendement saisi. Le <strong>capital final projeté</strong> devrait correspondre à votre objectif (à un dollar d'arrondi près) — il est affiché pour validation.</p>
+    <p>La <strong>croissance générée par le rendement</strong> est la portion du capital final qui ne provient pas de vos cotisations mais de l'effet de la capitalisation. Sur 25-30 ans, cette portion peut représenter <em>plus de la moitié</em> du capital final.</p>
+
+    <h3>Pourquoi le temps compte plus que le montant</h3>
+    <p>Pour un même objectif de 100 000 $ à 5 % de rendement :</p>
+    <ul>
+      <li>Sur <strong>5 ans</strong>, il faut environ 1 460 $ par mois.</li>
+      <li>Sur <strong>10 ans</strong>, il faut environ 644 $ par mois.</li>
+      <li>Sur <strong>20 ans</strong>, il faut environ 244 $ par mois.</li>
+      <li>Sur <strong>30 ans</strong>, il faut environ 120 $ par mois.</li>
+    </ul>
+    <p>Doubler la durée ne divise pas par deux la cotisation — ça la divise plutôt par trois ou quatre, grâce à la capitalisation. C'est l'argument le plus puissant pour commencer tôt.</p>
+
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M12 22v-2"/><circle cx="12" cy="12" r="9"/></svg>
+      <div>
+        <strong>Conseil :</strong> automatisez vos cotisations. Un prélèvement automatique le jour de la paie élimine la décision mensuelle et vous fait épargner « par défaut » plutôt que « si vous y pensez ».
+      </div>
+    </div>
+
+    <h3>Quel rendement utiliser?</h3>
+    <ul>
+      <li><strong>3 %</strong> — argent dans un compte d'épargne à intérêt élevé ou CPG. Conservateur.</li>
+      <li><strong>4 % à 5 %</strong> — portefeuille équilibré prudent (50 % obligations, 50 % actions, après frais).</li>
+      <li><strong>6 % à 7 %</strong> — portefeuille orienté actions (70 % à 100 %), prudent en termes de moyennes historiques après frais.</li>
+      <li><strong>8 %+</strong> — optimiste; à éviter pour un objectif important. Mieux vaut être surpris en bien que l'inverse.</li>
+    </ul>
+    <p>Plus l'horizon est court (moins de 5 ans), plus il faut <em>réduire</em> le rendement attendu : un objectif rapproché ne supporte pas une mauvaise année boursière.</p>
+
+    <h3>Limites de ce calculateur</h3>
+    <ul>
+      <li>L'inflation n'est pas intégrée. Si votre objectif est dans 25 ans, considérez aussi le pouvoir d'achat futur (voir <a href="inflation.html">calculateur d'inflation</a>).</li>
+      <li>Le rendement est constant. Les marchés sont volatils.</li>
+      <li>L'impôt n'est pas modélisé. Si l'épargne est en compte non enregistré, les rendements seront imposables — préférez un CELI, REER ou CELIAPP selon le contexte.</li>
+    </ul>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>Quelle proportion de mon revenu devrais-je épargner?</summary>
+      <p>Une règle classique est <strong>10 % à 20 % du revenu brut</strong> pour la retraite. Si vous épargnez aussi pour une mise de fonds ou un projet, ajoutez en surplus. Si vous avez commencé tard, viser 25 % à 30 % devient nécessaire pour rattraper.</p>
+    </details>
+
+    <details>
+      <summary>Vaut-il mieux épargner mensuellement ou en bloc en fin d'année?</summary>
+      <p>Mensuellement, presque toujours. C'est mathématiquement légèrement supérieur (les cotisations travaillent plus longtemps), et c'est <em>psychologiquement</em> beaucoup plus facile à maintenir. Les cotisations REER de février n'ont pas la même rigueur qu'un PAC mensuel automatique.</p>
+    </details>
+
+    <details>
+      <summary>Où placer cette épargne?</summary>
+      <p>Dépend de l'objectif :</p>
+      <p>• <strong>Mise de fonds (1<sup>re</sup> propriété)</strong> → CELIAPP en priorité, puis CELI ou RAP.</p>
+      <p>• <strong>Retraite</strong> → REER si taux marginal élevé, CELI sinon. Voir notre <a href="reer-vs-celi.html">calculateur REER vs CELI</a>.</p>
+      <p>• <strong>Projet à court terme (moins de 5 ans)</strong> → CELI avec produits à faible volatilité (compte épargne à intérêt élevé, CPG, fonds du marché monétaire).</p>
+    </details>
+
+    <details>
+      <summary>Et si je n'ai pas la marge pour le montant calculé?</summary>
+      <p>Trois leviers : <strong>réduire l'objectif</strong>, <strong>allonger la durée</strong>, ou <strong>augmenter le revenu</strong>. Modifiez les paramètres pour voir l'effet de chaque levier. Souvent, une combinaison des trois est plus réaliste qu'un seul ajustement extrême.</p>
+    </details>
+
+    <details>
+      <summary>Pourquoi la sensibilité au rendement compte-t-elle?</summary>
+      <p>Sur un horizon long, un écart de 2 % de rendement annuel peut changer la cotisation requise de plus de 30 %. Le rendement est rarement contrôlable, mais le choix d'un portefeuille à frais bas l'est.</p>
+    </details>
+  </section>
+
+  <div class="notice">
+    <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil financier ou en placement. Pour bâtir un plan d'épargne adapté à votre situation, consultez un planificateur financier autorisé.
+  </div>
+
+  <section class="related" aria-labelledby="rel-title">
+    <h2 id="rel-title">Calculateurs et guides reliés</h2>
+    <div class="related-grid">
+      <a class="related-card" href="celiapp.html">
+        <div class="label">Calculateur</div>
+        <div class="title">CELIAPP — mise de fonds</div>
+      </a>
+      <a class="related-card" href="reer-vs-celi.html">
+        <div class="label">Calculateur</div>
+        <div class="title">REER vs CELI</div>
+      </a>
+      <a class="related-card" href="retraite.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Capital retraite</div>
+      </a>
+      <a class="related-card" href="inflation.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Inflation</div>
+      </a>
+      <a class="related-card" href="../guides/retraite-quebec.html">
+        <div class="label">Guide</div>
+        <div class="title">Retraite au Québec : combien faut-il?</div>
+      </a>
+      <a class="related-card" href="../guides/reer-ou-celi.html">
+        <div class="label">Guide</div>
+        <div class="title">REER ou CELI</div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<section class="trust-strip" aria-label="Engagements">
+  <div class="container">
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>
+      Aucune donnée transmise
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Calculs dans votre navigateur
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+      Sans inscription
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      Information générale seulement
+    </span>
+    <span class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.8 4.6L18 8l-3.6 2.4L15.6 15 12 12.7 8.4 15l1.2-4.6L6 8l4.2-1.4z"/></svg>
+      Conçu pour les réalités fiscales du Québec
+    </span>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculatrices</h4>
+        <ul>
+          <li><a href="reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="celiapp.html">CELIAPP</a></li>
+          <li><a href="rrq.html">Rente RRQ</a></li>
+          <li><a href="oas-gis.html">PSV + SRG</a></li>
+          <li><a href="impot-quebec.html">Impôt Québec</a></li>
+          <li><a href="epargne-mensuelle.html">Épargne mensuelle</a></li>
+          <li><a href="inflation.html">Inflation</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Ressources</h4>
+        <ul>
+          <li><a href="../guides/">Guides</a></li>
+          <li><a href="../scenarios.html">Scénarios</a></li>
+          <li><a href="../glossaire.html">Glossaire</a></li>
+          <li><a href="../a-propos.html">À propos</a></li>
+          <li><a href="../methodologie.html">Méthodologie</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations à titre indicatif seulement.
+    </div>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Quelle proportion de mon revenu devrais-je épargner?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Règle classique : 10 % à 20 % du revenu brut pour la retraite. Ajoutez en surplus pour les autres objectifs. Si vous avez commencé tard, 25 % à 30 % peut être nécessaire."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Vaut-il mieux épargner mensuellement ou en bloc?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mensuellement, presque toujours. C'est mathématiquement supérieur et beaucoup plus facile à maintenir grâce à l'automatisation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Où placer cette épargne?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dépend de l'objectif : CELIAPP pour une 1re propriété, REER ou CELI pour la retraite (selon le taux marginal), CELI à faible volatilité pour un projet à moins de 5 ans."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Et si je n'ai pas la marge pour le montant calculé?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Trois leviers : réduire l'objectif, allonger la durée, ou augmenter le revenu. Une combinaison est souvent plus réaliste qu'un ajustement extrême."
+      }
+    }
+  ]
+}
+</script>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script src="../assets/js/main.js"></script>
+<script>
+function calcEpargne() {
+  const objectif = readNumber("objectif", 0);
+  const deja = readNumber("deja", 0);
+  const annees = Math.max(1, readNumber("annees", 10) | 0);
+  const rendement = readNumber("rendement", 5);
+
+  const mensuel = monthlyContributionNeeded(objectif, deja, rendement, annees);
+  const final = futureValueMonthly(deja, mensuel, rendement, annees);
+  const totalCotise = mensuel * annees * 12;
+  const croissance = final - deja - totalCotise;
+
+  // Sensibilité : -2 pp et +2 pp (en garantissant un rendement >= 0)
+  const rLow = Math.max(0, rendement - 2);
+  const rHigh = rendement + 2;
+  const mensuelLow = monthlyContributionNeeded(objectif, deja, rLow, annees);
+  const mensuelHigh = monthlyContributionNeeded(objectif, deja, rHigh, annees);
+
+  setResult("r-mensuel", mensuel, formatCADPrecise);
+  setResult("r-final", final);
+  setResult("r-total-cotise", totalCotise);
+  setResult("r-croissance", croissance);
+  setResult("r-mensuel-low", mensuelLow, formatCADPrecise);
+  setResult("r-mensuel-mid", mensuel, formatCADPrecise);
+  setResult("r-mensuel-high", mensuelHigh, formatCADPrecise);
+
+  document.getElementById("r-tag-low").textContent = formatPercent(rLow / 100, 1);
+  document.getElementById("r-tag-mid").textContent = formatPercent(rendement / 100, 1);
+  document.getElementById("r-tag-high").textContent = formatPercent(rHigh / 100, 1);
+
+  document.getElementById("results").hidden = false;
+
+  let msg;
+  if (mensuel <= 0) {
+    msg = `<strong>Bonne nouvelle :</strong> avec votre capital de départ de ${formatCAD(deja)} et un rendement de ${formatPercent(rendement/100, 1)} sur ${annees} ans, vous atteignez déjà votre objectif sans cotisation supplémentaire.`;
+  } else {
+    msg = `<strong>Pour atteindre ${formatCAD(objectif)} dans ${annees} ans</strong> avec un rendement de ${formatPercent(rendement/100, 1)} ` +
+      `et un capital de départ de ${formatCAD(deja)}, vous devez cotiser environ ` +
+      `<strong>${formatCADPrecise(mensuel)} par mois</strong>. ` +
+      `Sur la période, vous aurez cotisé ${formatCAD(totalCotise)} de votre poche; le rendement aura ajouté environ ` +
+      `<strong>${formatCAD(croissance)}</strong> grâce à la capitalisation.`;
+  }
+  setSummary("r-summary", msg);
+}
+</script>
+</body>
+</html>

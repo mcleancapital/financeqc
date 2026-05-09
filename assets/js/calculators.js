@@ -54,6 +54,30 @@ function futureValueAnnuity(pmt, rate, years) {
    TODO futur : intégrer paliers d'imposition Québec/fédéral
    pour estimer automatiquement le taux marginal selon le revenu.
    ========================================================= */
+
+// Estimation du taux marginal combiné fédéral + Québec selon le revenu.
+// Approximation pour 2025, après abattement fédéral du Québec (16,5 %).
+// Source : taux marginaux combinés couramment cités au Québec.
+function estimerTauxMarginalQc(revenu) {
+  if (!isFinite(revenu) || revenu <= 18571) return 0;
+  if (revenu <= 53255) return 27.53;
+  if (revenu <= 55867) return 32.53;
+  if (revenu <= 106555) return 37.12;
+  if (revenu <= 111733) return 41.12;
+  if (revenu <= 129590) return 45.71;
+  if (revenu <= 173205) return 47.46;
+  if (revenu <= 246752) return 49.97;
+  return 53.31;
+}
+
+// Met à jour le champ "tauxActuel" en fonction du revenu saisi.
+function estimerTauxMarginalActuel() {
+  const revenu = readNumber("revenu");
+  const tauxEl = document.getElementById("tauxActuel");
+  if (!tauxEl) return;
+  tauxEl.value = estimerTauxMarginalQc(revenu).toFixed(2);
+}
+
 function calcReerCeli() {
   const revenu = readNumber("revenu");
   const montant = readNumber("montant");
@@ -108,6 +132,437 @@ function calcReerCeli() {
     <strong>${formatCAD(economieImpot)}</strong> en remboursement d'impôt
     en cotisant au REER, mais ce montant sera réimposé au retrait à
     <strong>${formatPercent(tauxFutur, 0)}</strong>.
+  `;
+
+  document.getElementById("results").hidden = false;
+}
+
+/* =========================================================
+   1bis) RRQ — Rente du Régime de rentes du Québec
+   --------------------------------------------------------
+   Approximation pédagogique : la rente RRQ à 65 ans est
+   calculée à partir d'un % du « gain admissible moyen »
+   (plafonné au MGAP). On simplifie ainsi :
+
+     - Plafond MGAP 2025 ≈ 71 300 $ (gain admissible)
+     - Rente max à 65 ans ≈ 1 433 $/mois en 2025
+     - Le calcul officiel exige 40 années de cotisation et
+       élimine 15 % des moins bonnes années. On simplifie
+       avec un facteur de complétude = années / 39, plafonné à 1.
+     - Le salaire moyen utilisé est plafonné au MGAP.
+     - Bonus/pénalité d'âge :
+        * Avant 65 ans : -0,6 %/mois (ex. 60 ans = -36 %)
+        * Après 65 ans : +0,7 %/mois (ex. 70 ans = +42 %)
+        * Plage : 60-72 ans
+
+   Formule simplifiée :
+     gainPlafonne = min(salaireMoyen, MGAP)
+     rente65 = renteMax × (gainPlafonne / MGAP) × min(annees / 39, 1)
+     facteurAge = 1 + 0,007 × (ageRetraite - 65)   si ≥ 65
+                 = 1 + 0,006 × (ageRetraite - 65)   si < 65
+     rente = rente65 × facteurAge
+   ========================================================= */
+function calcRRQ() {
+  const ageActuel = readNumber("ageActuel");
+  const ageRetraite = readNumber("ageRetraite");
+  const salaireMoyen = readNumber("salaireMoyen");
+  const annees = readNumber("anneesTravaillees");
+
+  const MGAP_2025 = 71300;
+  const RENTE_MAX_MENSUELLE_65 = 1433;
+
+  const gainPlafonne = Math.min(salaireMoyen, MGAP_2025);
+  const facteurCotisation = Math.min(annees / 39, 1);
+  const rente65 =
+    RENTE_MAX_MENSUELLE_65 * (gainPlafonne / MGAP_2025) * facteurCotisation;
+
+  let facteurAge;
+  const ageBorne = Math.max(60, Math.min(72, ageRetraite));
+  if (ageBorne >= 65) {
+    facteurAge = 1 + 0.007 * (ageBorne - 65);
+  } else {
+    facteurAge = 1 - 0.006 * (65 - ageBorne);
+  }
+
+  const renteMensuelle = Math.max(0, rente65 * facteurAge);
+  const renteAnnuelle = renteMensuelle * 12;
+
+  document.getElementById("r-rrq-mois").textContent = formatCAD(renteMensuelle);
+  document.getElementById("r-rrq-annee").textContent = formatCAD(renteAnnuelle);
+  document.getElementById("r-rrq-base").textContent = formatCAD(rente65);
+  document.getElementById("r-rrq-facteur").textContent = formatPercent(
+    facteurAge - 1,
+    1
+  );
+
+  let pctMax = (renteMensuelle / RENTE_MAX_MENSUELLE_65) * 100;
+  pctMax = Math.max(0, Math.min(100, pctMax));
+
+  let texte;
+  if (ageBorne < 65) {
+    texte = `À ${ageBorne} ans, votre rente est <strong>réduite</strong> de ${formatPercent(
+      1 - facteurAge,
+      1
+    )} par rapport à 65 ans (-0,6 %/mois). Patienter quelques années peut considérablement augmenter le montant à vie.`;
+  } else if (ageBorne > 65) {
+    texte = `En reportant à ${ageBorne} ans, votre rente est <strong>bonifiée</strong> de ${formatPercent(
+      facteurAge - 1,
+      1
+    )} (+0,7 %/mois jusqu'à 72 ans). Cette bonification est garantie et indexée à vie.`;
+  } else {
+    texte =
+      "Vous prenez votre rente à l'âge « pivot » de 65 ans : pas de réduction ni de bonification.";
+  }
+
+  document.getElementById("r-summary").innerHTML = `
+    <strong>Résumé :</strong> environ <strong>${formatCAD(
+      renteMensuelle
+    )}/mois</strong> (~${pctMax.toFixed(
+      0
+    )} % du maximum 2025). ${texte}<br><br>
+    <em>Estimation simplifiée. Le calcul officiel élimine 15 % des plus
+    faibles années, intègre les périodes pour soins aux enfants, et tient
+    compte du salaire admissible année par année. Pour un calcul précis,
+    consultez votre relevé de participation à
+    <a href="https://www.retraitequebec.gouv.qc.ca/" target="_blank" rel="noopener">Retraite Québec</a>.</em>
+  `;
+
+  document.getElementById("results").hidden = false;
+}
+
+/* =========================================================
+   1ter) PSV + SRG (Pension de la sécurité de la vieillesse
+                    + Supplément de revenu garanti)
+   --------------------------------------------------------
+   Approximation 2025 (chiffres trimestriels arrondis) :
+     - PSV maximale (65-74 ans) : ~727 $/mois
+     - PSV bonifiée (75 ans+)   : ~800 $/mois (≈ +10 %)
+     - Récupération PSV : 15 % du revenu individuel net
+       au-dessus de ~93 454 $. Pleine récupération vers
+       151 668 $ (65-74 ans) ou 157 490 $ (75 ans+).
+
+   SRG (très simplifié) :
+     - Personne seule : max ~1 086 $/mois
+     - Couple (les 2 reçoivent PSV) : max ~654 $/mois chacun
+     - Réduction d'environ 0,50 $ par dollar de revenu hors PSV
+       (la formule réelle a plusieurs paliers et types de revenus).
+     - Seuils de coupure approximatifs :
+        * Seul : revenu hors PSV ≈ 22 056 $
+        * Couple : revenu combiné hors PSV ≈ 29 136 $
+
+   On utilise des formules simplifiées et claires pour le citoyen.
+   ========================================================= */
+function calcOasGis() {
+  const revenu = readNumber("revenuRetraite"); // revenu personnel hors PSV
+  const age = readNumber("ageActuel");
+  const situation = document.getElementById("situation").value; // "seul" | "couple"
+
+  const PSV_BASE = 727;
+  const PSV_75 = 800;
+  const PSV_RECUP_SEUIL = 93454;
+  const PSV_RECUP_PLEINE = age >= 75 ? 157490 : 151668;
+
+  const psvMax = age >= 75 ? PSV_75 : PSV_BASE;
+
+  // Récupération PSV : 15 % au-dessus du seuil
+  let psvAnnuelle = psvMax * 12;
+  let recuperation = 0;
+  if (revenu > PSV_RECUP_SEUIL) {
+    recuperation = Math.min(psvAnnuelle, (revenu - PSV_RECUP_SEUIL) * 0.15);
+    psvAnnuelle = Math.max(0, psvAnnuelle - recuperation);
+  }
+  const psvMensuelle = psvAnnuelle / 12;
+
+  // SRG (uniquement à partir de 65 ans)
+  let srgMax, seuilCoupure;
+  if (situation === "couple") {
+    srgMax = 654;
+    seuilCoupure = 29136;
+  } else {
+    srgMax = 1086;
+    seuilCoupure = 22056;
+  }
+
+  let srgMensuelle = 0;
+  if (age >= 65) {
+    if (revenu < seuilCoupure) {
+      srgMensuelle = Math.max(0, srgMax - (revenu / 12) * 0.5);
+      srgMensuelle = Math.min(srgMensuelle, srgMax);
+    }
+  }
+  const srgAnnuelle = srgMensuelle * 12;
+
+  const totalMois = psvMensuelle + srgMensuelle;
+  const totalAnnee = psvAnnuelle + srgAnnuelle;
+
+  document.getElementById("r-psv-mois").textContent = formatCAD(psvMensuelle);
+  document.getElementById("r-srg-mois").textContent = formatCAD(srgMensuelle);
+  document.getElementById("r-total-mois").textContent = formatCAD(totalMois);
+  document.getElementById("r-total-annee").textContent = formatCAD(totalAnnee);
+  document.getElementById("r-recup").textContent = formatCAD(recuperation);
+
+  let texte;
+  if (age < 65) {
+    texte = `À ${age} ans, vous n'êtes pas encore admissible à la PSV (65 ans) ni au SRG. Le calcul ci-dessus suppose que vous y êtes admissible : il sert à projeter le revenu futur.`;
+  } else if (recuperation > 0 && srgMensuelle === 0) {
+    texte = `Votre revenu dépasse le seuil de récupération de la PSV (~${formatCAD(
+      PSV_RECUP_SEUIL
+    )}). Vous perdez environ <strong>${formatCAD(
+      recuperation
+    )}/an</strong> de PSV. Stratégie classique : générer plus de revenu via CELI (non imposable) plutôt que via REER/FERR pour rester sous le seuil.`;
+  } else if (srgMensuelle > 0) {
+    texte = `Votre revenu vous donne droit à du SRG : un revenu non imposable très avantageux. <strong>Attention</strong> : un retrait REER ou un revenu d'intérêt supplémentaire peut faire chuter rapidement votre SRG (taux marginal effectif de 50 %+).`;
+  } else {
+    texte =
+      "Vous touchez la PSV pleine, sans SRG. C'est la situation la plus fréquente pour un retraité avec un revenu de retraite modeste à moyen.";
+  }
+
+  document.getElementById("r-summary").innerHTML = `
+    <strong>Résumé :</strong> environ <strong>${formatCAD(
+      totalMois
+    )}/mois</strong> de prestations fédérales (${formatCAD(
+      totalAnnee
+    )}/an). ${texte}<br><br>
+    <em>Estimation simplifiée. Les chiffres exacts varient chaque
+    trimestre et dépendent de votre revenu déclaré l'année précédente
+    (et non du revenu courant). Pour un calcul officiel,
+    consultez <a href="https://www.canada.ca/fr/services/prestations/pensionspubliques.html" target="_blank" rel="noopener">Service Canada</a>.</em>
+  `;
+
+  document.getElementById("results").hidden = false;
+}
+
+/* =========================================================
+   1quater) Impôt Québec — estimateur simplifié
+   --------------------------------------------------------
+   Combine paliers fédéraux 2025 + paliers provinciaux QC 2025.
+   On applique un montant personnel de base unique (~18 000 $)
+   sans modéliser tous les crédits.
+
+   Sources des taux 2025 (approximation) :
+     Fédéral : 15 % / 20,5 % / 26 % / 29 % / 33 %
+       paliers : 57 375 / 114 750 / 177 882 / 253 414
+       Avec abattement Québec de 16,5 %, on multiplie par 0,835.
+     Québec : 14 % / 19 % / 24 % / 25,75 %
+       paliers : 53 255 / 106 495 / 129 590
+
+   Traitement simplifié des éléments :
+     - Salaire : imposable au taux marginal complet
+     - Dividendes : on applique un taux effectif global ~35 %
+       (ordre de grandeur des dividendes ordinaires bruts au QC)
+     - Gains en capital : 50 % imposable au taux marginal
+     - Cotisations REER : déduction directe du revenu imposable
+
+   Le résultat est un ordre de grandeur. Pour une déclaration
+   réelle, il y a de nombreux crédits et règles spécifiques.
+   ========================================================= */
+function _impotFederalQc(revenu) {
+  if (revenu <= 0) return 0;
+  const personnel = 18571;
+  const base = Math.max(0, revenu - personnel);
+  const paliers = [
+    [57375, 0.15],
+    [114750, 0.205],
+    [177882, 0.26],
+    [253414, 0.29],
+    [Infinity, 0.33],
+  ];
+  let restant = base;
+  let plancher = 0;
+  let impot = 0;
+  for (const [haut, taux] of paliers) {
+    const tranche = Math.max(
+      0,
+      Math.min(restant + plancher, haut) - plancher
+    );
+    impot += tranche * taux;
+    if (restant + plancher <= haut) break;
+    plancher = haut;
+  }
+  // Abattement Québec : -16,5 %
+  return impot * 0.835;
+}
+
+function _impotProvincialQc(revenu) {
+  if (revenu <= 0) return 0;
+  const personnel = 18571;
+  const base = Math.max(0, revenu - personnel);
+  const paliers = [
+    [53255, 0.14],
+    [106495, 0.19],
+    [129590, 0.24],
+    [Infinity, 0.2575],
+  ];
+  let plancher = 0;
+  let impot = 0;
+  for (const [haut, taux] of paliers) {
+    const tranche = Math.max(0, Math.min(base, haut) - plancher);
+    impot += tranche * taux;
+    if (base <= haut) break;
+    plancher = haut;
+  }
+  return impot;
+}
+
+function _tauxMarginalCombine(revenuImposable) {
+  // Approximation : on calcule l'impôt à revenu et à revenu+100, puis (delta/100).
+  const i1 = _impotFederalQc(revenuImposable) + _impotProvincialQc(revenuImposable);
+  const i2 =
+    _impotFederalQc(revenuImposable + 100) +
+    _impotProvincialQc(revenuImposable + 100);
+  return (i2 - i1) / 100;
+}
+
+function calcImpotQc() {
+  const salaire = readNumber("salaire");
+  const dividendes = readNumber("dividendes");
+  const gains = readNumber("gainsCapital");
+  const reer = readNumber("cotisationReer");
+
+  const revenuImposable = Math.max(
+    0,
+    salaire + 0.5 * gains - reer
+  );
+
+  const impotSalaire =
+    _impotFederalQc(revenuImposable) + _impotProvincialQc(revenuImposable);
+
+  // Dividendes ordinaires : taux effectif simplifié ~35 %
+  const TAUX_DIV_EFFECTIF = 0.35;
+  const impotDiv = dividendes * TAUX_DIV_EFFECTIF;
+
+  const impotTotal = impotSalaire + impotDiv;
+  const revenuBrut = salaire + dividendes + gains;
+  const revenuNet = revenuBrut - impotTotal;
+  const tauxEffectif = revenuBrut > 0 ? impotTotal / revenuBrut : 0;
+  const tauxMarginal = _tauxMarginalCombine(revenuImposable);
+
+  document.getElementById("r-impot-total").textContent = formatCAD(impotTotal);
+  document.getElementById("r-revenu-net").textContent = formatCAD(revenuNet);
+  document.getElementById("r-taux-marginal").textContent = formatPercent(
+    tauxMarginal,
+    1
+  );
+  document.getElementById("r-taux-effectif").textContent = formatPercent(
+    tauxEffectif,
+    1
+  );
+  document.getElementById("r-revenu-imposable").textContent = formatCAD(
+    revenuImposable
+  );
+
+  let conseil = "";
+  if (reer === 0 && tauxMarginal >= 0.37) {
+    conseil =
+      "Votre taux marginal est élevé : chaque 1 000 $ cotisé au REER vous économise ~" +
+      formatCAD(1000 * tauxMarginal) +
+      " d'impôt cette année. Voyez si vous avez des droits inutilisés.";
+  } else if (tauxMarginal <= 0.28) {
+    conseil =
+      "Votre taux marginal est bas. Le CELI est souvent plus avantageux que le REER dans cette zone : la déduction REER aurait peu de valeur.";
+  } else {
+    conseil =
+      "Votre taux marginal est modéré. La règle générale : REER si vous prévoyez retirer à un taux plus bas; sinon, CELI.";
+  }
+
+  document.getElementById("r-summary").innerHTML = `
+    <strong>Résumé :</strong> sur un revenu brut de
+    <strong>${formatCAD(revenuBrut)}</strong>, vous payez environ
+    <strong>${formatCAD(impotTotal)}</strong> en impôt fédéral + provincial,
+    soit un taux effectif d'environ <strong>${formatPercent(
+      tauxEffectif,
+      1
+    )}</strong>. Votre prochaine tranche de revenu serait imposée à
+    environ <strong>${formatPercent(tauxMarginal, 1)}</strong>. ${conseil}<br><br>
+    <em>Estimation simplifiée. N'inclut pas le RRQ, le RQAP, l'AE, les
+    crédits provinciaux/fédéraux, le crédit pour dividendes détaillé,
+    les frais médicaux, les dons, etc. Pour préparer une déclaration,
+    utilisez un logiciel certifié ou consultez un comptable.</em>
+  `;
+
+  document.getElementById("results").hidden = false;
+}
+
+/* =========================================================
+   1quinquies) Valeur nette
+   --------------------------------------------------------
+   Très simple : actifs - passifs, plus visualisation.
+   ========================================================= */
+function calcValeurNette() {
+  const maison = readNumber("maison");
+  const placements = readNumber("placements");
+  const reer = readNumber("vnReer");
+  const celi = readNumber("vnCeli");
+  const autres = readNumber("autresActifs");
+  const hypotheque = readNumber("hypotheque");
+  const dettes = readNumber("dettes");
+
+  const totalActifs = maison + placements + reer + celi + autres;
+  const totalPassifs = hypotheque + dettes;
+  const valeurNette = totalActifs - totalPassifs;
+
+  document.getElementById("r-actifs").textContent = formatCAD(totalActifs);
+  document.getElementById("r-passifs").textContent = formatCAD(totalPassifs);
+  document.getElementById("r-valeur-nette").textContent = formatCAD(valeurNette);
+
+  // Construction du graphique horizontal simple
+  const segments = [
+    { label: "Maison", value: maison, type: "actif" },
+    { label: "Placements", value: placements, type: "actif" },
+    { label: "REER", value: reer, type: "actif" },
+    { label: "CELI", value: celi, type: "actif" },
+    { label: "Autres actifs", value: autres, type: "actif" },
+    { label: "Hypothèque", value: hypotheque, type: "passif" },
+    { label: "Autres dettes", value: dettes, type: "passif" },
+  ].filter((s) => s.value > 0);
+
+  const max = Math.max(1, ...segments.map((s) => s.value));
+  const chart = document.getElementById("r-chart");
+  chart.innerHTML = segments
+    .map((s) => {
+      const pct = Math.round((s.value / max) * 100);
+      const cls = s.type === "passif" ? "neg" : "";
+      return `
+        <div class="bar-row">
+          <div>${s.label}</div>
+          <div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
+          <div class="bar-amount ${cls}">${
+        s.type === "passif" ? "−" : ""
+      }${formatCAD(s.value)}</div>
+        </div>`;
+    })
+    .join("");
+
+  let interpretation;
+  if (valeurNette < 0) {
+    interpretation = `Votre valeur nette est <strong>négative</strong>. C'est normal en début de carrière (hypothèque, prêt étudiant, prêt auto). Concentrez-vous sur le remboursement des dettes au taux le plus élevé et sur l'épargne automatique.`;
+  } else if (valeurNette < 100000) {
+    interpretation = `Vous bâtissez progressivement votre patrimoine. À ce stade, l'objectif principal est d'éliminer les dettes coûteuses (cartes de crédit, marges) et de remplir d'abord le CELI.`;
+  } else if (valeurNette < 500000) {
+    interpretation = `Votre patrimoine est solide. C'est typiquement la zone où il faut commencer à structurer activement la fiscalité (REER vs CELI, CELIAPP, gestion des dividendes corporatifs si applicable).`;
+  } else if (valeurNette < 1500000) {
+    interpretation = `Votre patrimoine est important. La planification fiscale et successorale prend toute son ampleur : assurance-vie, fiducie familiale potentielle, optimisation REER/CELI/non enregistré, planification du décaissement.`;
+  } else {
+    interpretation = `Patrimoine très significatif. À ce niveau, la majorité des décisions sont fiscales et successorales. La concentration sectorielle (immobilier vs portefeuille liquide) mérite une attention particulière.`;
+  }
+
+  // Ratio dettes / actifs
+  const ratio = totalActifs > 0 ? totalPassifs / totalActifs : 0;
+  let alerteRatio = "";
+  if (ratio > 0.6) {
+    alerteRatio = `<br><strong>Ratio dettes/actifs élevé</strong> (${formatPercent(
+      ratio,
+      0
+    )}). Une part importante de votre bilan dépend du levier — surveillez votre coussin de liquidités.`;
+  }
+
+  document.getElementById("r-summary").innerHTML = `
+    <strong>Valeur nette estimée :</strong> ${formatCAD(
+      valeurNette
+    )}. ${interpretation}${alerteRatio}<br><br>
+    <em>La valeur nette est un indicateur, pas une cible. À évaluer
+    avec votre situation : revenu, âge, objectifs de retraite,
+    nombre de personnes à charge.</em>
   `;
 
   document.getElementById("results").hidden = false;

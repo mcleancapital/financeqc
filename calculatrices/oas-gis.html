@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur PSV + SRG — Estimation des prestations fédérales de retraite</title>
+<meta name="description" content="Estimez votre Pension de la sécurité de la vieillesse (PSV) et votre Supplément de revenu garanti (SRG) selon votre revenu, votre situation familiale et votre âge. Pour les retraités du Québec.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/oas-gis.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculateur PSV + SRG (Québec)">
+<meta property="og:description" content="Estimez la PSV et le SRG en fonction de votre revenu et de votre situation familiale.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="../"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <div class="nav-group">
+        <a href="../calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="reer-vs-celi.html">REER vs CELI</a>
+          <a href="rrq.html">Rente RRQ</a>
+          <a href="oas-gis.html">PSV + SRG</a>
+          <a href="retraite.html">Retraite</a>
+          <a href="impot-quebec.html">Impôt Québec</a>
+          <a href="valeur-nette.html">Valeur nette</a>
+          <a href="salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="../guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="../guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="../guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="../guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="../retraite/">Retraite</a>
+      <a href="../impot/">Impôt</a>
+      <a href="../entrepreneurs/">Entrepreneurs</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="../">Accueil</a> › <a href="../calculatrices/">Calculatrices</a> › <span>PSV + SRG</span>
+  </nav>
+
+  <h1>Calculateur PSV + SRG (Québec)</h1>
+  <p class="lede muted">La Pension de la sécurité de la vieillesse (PSV) et le Supplément de revenu garanti (SRG) sont des prestations fédérales versées aux 65 ans et plus, sous conditions de revenu. Cet outil vous donne une estimation rapide de ce que vous pourriez recevoir.</p>
+
+  <div class="notice">
+    <strong>Approximation :</strong> les chiffres officiels sont publiés trimestriellement par Service Canada. Le SRG suit plusieurs paliers progressifs. Ce calculateur utilise les valeurs 2025 simplifiées pour donner un ordre de grandeur.
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field">
+        <label for="ageActuel">Âge actuel</label>
+        <input type="number" id="ageActuel" min="55" max="100" step="1" value="68">
+        <div class="hint">PSV admissible à partir de 65 ans. Bonification de ~10 % à 75 ans.</div>
+      </div>
+
+      <div class="field">
+        <label for="revenuRetraite">Revenu de retraite annuel hors PSV ($)</label>
+        <input type="number" id="revenuRetraite" min="0" step="500" value="35000">
+        <div class="hint">RRQ + REER/FERR + intérêts + dividendes. Exclut PSV et CELI.</div>
+      </div>
+
+      <div class="field">
+        <label for="situation">Situation familiale</label>
+        <select id="situation">
+          <option value="seul">Personne seule</option>
+          <option value="couple">En couple (les deux reçoivent la PSV)</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcOasGis()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile highlight">
+          <div class="label">PSV mensuelle</div>
+          <div class="value" id="r-psv-mois">—</div>
+        </div>
+        <div class="result-tile highlight">
+          <div class="label">SRG mensuel</div>
+          <div class="value" id="r-srg-mois">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Total mensuel</div>
+          <div class="value" id="r-total-mois">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Total annuel</div>
+          <div class="value" id="r-total-annee">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Récupération PSV (clawback)</div>
+          <div class="value" id="r-recup">—</div>
+        </div>
+      </div>
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <div class="notice">
+    <strong>Avis :</strong> Ces calculs sont fournis à titre indicatif seulement. Pour le montant officiel applicable à votre situation, consultez Service Canada (Mon dossier).
+  </div>
+
+  <article class="article-content section">
+    <h2>PSV : la pension universelle fédérale</h2>
+    <p>La <strong>Pension de la sécurité de la vieillesse</strong> (Old Age Security en anglais) est versée à toute personne de 65 ans ou plus ayant résidé au Canada au moins 10 ans après ses 18 ans. Elle est <strong>imposable</strong>. À 75 ans, le montant augmente automatiquement d'environ 10 %.</p>
+
+    <h3>La récupération de la PSV (clawback)</h3>
+    <p>Au-delà d'environ <strong>93 454 $</strong> de revenu individuel net (chiffre 2024-2025), la PSV est récupérée à raison de <strong>15 % par dollar excédentaire</strong>. Vers 151 668 $ (ou 157 490 $ à 75 ans+), la PSV est entièrement récupérée. C'est une des principales raisons pour lesquelles beaucoup de retraités à revenu élevé privilégient le CELI (non imposable, donc pas de clawback) plutôt que des retraits massifs de REER/FERR.</p>
+
+    <div class="callout callout-warn">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg>
+      <div><strong>Piège classique :</strong> à 71 ans, le FERR force des retraits minimums imposables. Si votre REER est très important et qu'il pousse votre revenu au-dessus de 93 454 $, vous perdez automatiquement de la PSV. Solution : réduire le REER avant 71 ans en transférant graduellement vers le CELI ou en consommant le REER plutôt que le CELI.</div>
+    </div>
+
+    <h2>SRG : le supplément pour revenus modestes</h2>
+    <p>Le <strong>Supplément de revenu garanti</strong> est versé aux personnes qui touchent la PSV et dont le revenu autre est faible. Il est <strong>non imposable</strong>, ce qui le rend extrêmement avantageux. Ses paramètres pour 2025 (approximatifs) :</p>
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Situation</th><th>SRG mensuel max</th><th>Coupure approximative</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Personne seule</td><td>~1 086 $</td><td>~22 056 $ de revenu hors PSV</td></tr>
+          <tr><td>Couple (les 2 PSV)</td><td>~654 $ chacun</td><td>~29 136 $ revenu combiné</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Le piège du SRG : taux marginaux effectifs très élevés</h3>
+    <p>Le SRG diminue d'environ <strong>50 ¢ par dollar de revenu additionnel</strong> (parfois plus avec d'autres prestations qui s'éteignent). Concrètement, retirer 1 000 $ supplémentaires d'un REER quand on touche le SRG peut faire perdre 500 $ de SRG <em>en plus</em> de l'impôt courant — un taux marginal effectif de 65 % à 80 % pour un retraité modeste.</p>
+
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+      <div><strong>Stratégie pour les retraités modestes :</strong> remplir d'abord le CELI (revenu non imposable et non comptabilisé pour le SRG) plutôt que le REER. Pour les revenus très bas, le CELI peut être nettement plus avantageux que le REER, malgré l'absence de déduction immédiate.</div>
+    </div>
+
+    <h3>Exemples québécois</h3>
+    <div class="scenario-grid">
+      <div class="scenario">
+        <h4>Diane, 67 ans, seule</h4>
+        <p>RRQ ≈ 14 000 $/an, FERR minimum ≈ 6 000 $/an. Revenu hors PSV ≈ 20 000 $.</p>
+        <div class="scenario-result">PSV ~727 $/mois + SRG ~250 $/mois ≈ 11 700 $/an</div>
+      </div>
+      <div class="scenario">
+        <h4>Robert, 70 ans, en couple</h4>
+        <p>Revenu individuel ≈ 50 000 $ (RRQ + FERR + dividendes). Conjointe également retraitée.</p>
+        <div class="scenario-result">PSV ~727 $/mois, pas de SRG ≈ 8 720 $/an</div>
+      </div>
+      <div class="scenario scenario-bad">
+        <h4>Lise, 76 ans, seule, fortunée</h4>
+        <p>FERR + dividendes + intérêts ≈ 130 000 $/an.</p>
+        <div class="scenario-result">PSV partiellement récupérée : ~30 % de la pleine valeur</div>
+      </div>
+    </div>
+
+    <h3>Limites du calcul</h3>
+    <ul>
+      <li>Les paliers progressifs du SRG ne sont pas modélisés finement.</li>
+      <li>Le calcul officiel utilise le revenu de l'année précédente, pas l'année courante.</li>
+      <li>Certaines déductions (premiers 5 000 $ de revenu d'emploi) ne sont pas prises en compte.</li>
+    </ul>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>La PSV est-elle automatique?</summary>
+      <p>Pas toujours. Service Canada inscrit automatiquement plusieurs personnes, mais d'autres doivent en faire la demande. Vérifiez votre dossier dans « Mon dossier Service Canada » avant 65 ans pour ne rien manquer.</p>
+    </details>
+
+    <details>
+      <summary>Puis-je reporter la PSV pour la bonifier?</summary>
+      <p>Oui. Reporter la PSV après 65 ans donne 0,6 % de plus par mois, jusqu'à 36 % de plus à 70 ans. C'est une bonification permanente, indexée à vie. Avantageux si vous avez d'autres revenus entre 65 et 70 ans et une bonne santé.</p>
+    </details>
+
+    <details>
+      <summary>Le SRG est-il imposable?</summary>
+      <p>Non. Le SRG est <strong>non imposable</strong> et n'apparaît pas comme revenu sur votre déclaration. C'est ce qui en fait une prestation extrêmement avantageuse pour les retraités à revenu modeste.</p>
+    </details>
+
+    <details>
+      <summary>Pourquoi la PSV est-elle « récupérée »?</summary>
+      <p>La PSV est universelle, mais le gouvernement la récupère partiellement chez les retraités à revenu élevé via la « contribution de récupération ». Au-delà d'environ 93 454 $, on perd 15 ¢ par dollar de revenu additionnel jusqu'à pleine récupération.</p>
+    </details>
+
+    <details>
+      <summary>Le CELI affecte-t-il mes prestations?</summary>
+      <p>Non. Les retraits CELI ne sont pas du revenu imposable et ne comptent pas dans les calculs de récupération PSV ou SRG. C'est précisément pour cette raison que le CELI est souvent privilégié pour la retraite, surtout pour les revenus modestes.</p>
+    </details>
+  </section>
+
+  <section class="related" aria-labelledby="rel-title">
+    <h2 id="rel-title">Calculateurs et guides reliés</h2>
+    <div class="related-grid">
+      <a class="related-card" href="rrq.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Rente RRQ</div>
+      </a>
+      <a class="related-card" href="retraite.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Capital retraite</div>
+      </a>
+      <a class="related-card" href="reer-vs-celi.html">
+        <div class="label">Calculateur</div>
+        <div class="title">REER vs CELI</div>
+      </a>
+      <a class="related-card" href="../guides/retraite-quebec.html">
+        <div class="label">Guide complet</div>
+        <div class="title">Retraite au Québec : combien faut-il?</div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculatrices</h4>
+        <ul>
+          <li><a href="reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="rrq.html">Rente RRQ</a></li>
+          <li><a href="oas-gis.html">PSV + SRG</a></li>
+          <li><a href="impot-quebec.html">Impôt Québec</a></li>
+          <li><a href="valeur-nette.html">Valeur nette</a></li>
+          <li><a href="retraite.html">Retraite</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Guides</h4>
+        <ul>
+          <li><a href="../guides/reer-ou-celi.html">REER ou CELI</a></li>
+          <li><a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a></li>
+          <li><a href="../guides/retraite-quebec.html">Retraite Québec</a></li>
+          <li><a href="../guides/acheter-ou-louer.html">Acheter ou louer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations à titre indicatif seulement.
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"La PSV est-elle automatique?","acceptedAnswer":{"@type":"Answer","text":"Pas toujours. Service Canada inscrit automatiquement plusieurs personnes, mais d'autres doivent en faire la demande. Vérifiez votre dossier Mon dossier Service Canada avant 65 ans."}},
+    {"@type":"Question","name":"Puis-je reporter la PSV pour la bonifier?","acceptedAnswer":{"@type":"Answer","text":"Oui. Reporter après 65 ans donne 0,6 % de plus par mois, jusqu'à 36 % de plus à 70 ans. Bonification permanente et indexée à vie."}},
+    {"@type":"Question","name":"Le SRG est-il imposable?","acceptedAnswer":{"@type":"Answer","text":"Non. Le SRG est non imposable et n'apparaît pas sur votre déclaration de revenus. C'est une prestation extrêmement avantageuse pour les retraités modestes."}},
+    {"@type":"Question","name":"Pourquoi la PSV est-elle récupérée?","acceptedAnswer":{"@type":"Answer","text":"La PSV est universelle mais récupérée pour les revenus élevés. Au-delà d'environ 93 454 $, on perd 15 cents par dollar additionnel jusqu'à pleine récupération."}},
+    {"@type":"Question","name":"Le CELI affecte-t-il mes prestations?","acceptedAnswer":{"@type":"Answer","text":"Non. Les retraits CELI ne sont pas du revenu imposable et ne comptent pas dans les calculs de récupération PSV ou SRG. Le CELI est souvent privilégié pour la retraite, surtout pour les revenus modestes."}}
+  ]
+}
+</script>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/calculators.js"></script>
+</body>
+</html>

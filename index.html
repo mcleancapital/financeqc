@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FinanceQc — Calculateurs financiers et fiscaux pour le Québec</title>
-<meta name="description" content="Des calculateurs financiers gratuits pensés pour le Québec : REER vs CELI, salaire vs dividendes, retraite, hypothèque vs investissement. Estimations claires, sans inscription.">
+<title>FinanceQc — Calculateurs et guides financiers pour le Québec</title>
+<meta name="description" content="Calculateurs gratuits et guides clairs pour les Québécois : REER, CELI, RRQ, PSV, salaire vs dividendes, impôt Québec, retraite, valeur nette. Estimations rapides, en français, sans inscription.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://www.financeqc.ca/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="FinanceQc — Calculateurs financiers pour le Québec">
-<meta property="og:description" content="Calculateurs gratuits pour les Québécois : REER vs CELI, salaire vs dividendes, retraite, hypothèque vs investissement.">
+<meta property="og:description" content="Calculateurs gratuits pour les Québécois : REER, CELI, RRQ, PSV, salaire vs dividendes, impôt Québec, retraite, valeur nette.">
 <meta property="og:locale" content="fr_CA">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -22,10 +22,31 @@
       <span>FinanceQc</span>
     </a>
     <nav class="site-nav" aria-label="Navigation principale">
-      <a href="calculatrices/reer-vs-celi.html">REER vs CELI</a>
-      <a href="calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a>
-      <a href="calculatrices/retraite.html">Retraite</a>
-      <a href="calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+      <div class="nav-group">
+        <a href="calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="calculatrices/reer-vs-celi.html">REER vs CELI</a>
+          <a href="calculatrices/rrq.html">Rente RRQ</a>
+          <a href="calculatrices/oas-gis.html">PSV + SRG</a>
+          <a href="calculatrices/retraite.html">Retraite</a>
+          <a href="calculatrices/impot-quebec.html">Impôt Québec</a>
+          <a href="calculatrices/valeur-nette.html">Valeur nette</a>
+          <a href="calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="retraite/">Retraite</a>
+      <a href="impot/">Impôt</a>
+      <a href="entrepreneurs/">Entrepreneurs</a>
     </nav>
   </div>
 </header>
@@ -33,43 +54,100 @@
 <section class="hero">
   <div class="container">
     <span class="eyebrow">Outils gratuits — Sans inscription</span>
-    <h1>Des calculateurs financiers pensés pour le Québec</h1>
-    <p class="lede">Impôt, retraite, REER, CELI, dividendes, prestations et décisions financières importantes. Des estimations claires, en français, faites pour vous aider à comprendre — pas pour vous vendre quoi que ce soit.</p>
+    <h1>Des calculateurs et guides financiers pensés pour le Québec</h1>
+    <p class="lede">REER, CELI, RRQ, PSV, impôt provincial, salaire vs dividendes, retraite, valeur nette. Des estimations claires, en français, faites pour vous aider à comprendre — pas pour vous vendre quoi que ce soit.</p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="#calculateurs">Voir les calculateurs</a>
-      <a class="btn btn-secondary" href="#a-propos">En savoir plus</a>
+      <a class="btn btn-secondary" href="guides/">Lire les guides</a>
     </div>
   </div>
 </section>
 
 <section class="section" id="calculateurs">
   <div class="container">
-    <h2>Nos calculateurs</h2>
-    <p class="muted">Tous les calculs s'effectuent dans votre navigateur. Aucune donnée n'est transmise à un serveur.</p>
+    <h2>Calculateurs populaires</h2>
+    <p class="muted">Tous les calculs s'effectuent dans votre navigateur. Aucune donnée n'est transmise.</p>
 
     <div class="card-grid">
       <a class="calc-card" href="calculatrices/reer-vs-celi.html">
+        <span class="badge badge-popular">Populaire</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h7M14 12h7M3 6h7M14 6h7M3 18h7M14 18h7"/></svg>
+        </span>
         <span class="tag">Épargne</span>
         <h3>REER vs CELI</h3>
         <p>Comparez la valeur future nette de cotiser au REER ou au CELI selon vos taux d'imposition actuel et futur.</p>
         <span class="arrow">Ouvrir le calculateur →</span>
       </a>
 
-      <a class="calc-card" href="calculatrices/salaire-vs-dividendes.html">
-        <span class="tag">Entrepreneur</span>
-        <h3>Salaire vs dividendes</h3>
-        <p>Estimez l'impôt corporatif et personnel d'une stratégie salaire, dividendes ou mixte pour votre PME québécoise.</p>
+      <a class="calc-card" href="calculatrices/rrq.html">
+        <span class="badge badge-new">Nouveau</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+        </span>
+        <span class="tag">Retraite</span>
+        <h3>Rente RRQ</h3>
+        <p>Estimez votre rente du Régime de rentes du Québec selon votre salaire moyen, votre âge de départ et vos années de cotisation.</p>
+        <span class="arrow">Ouvrir le calculateur →</span>
+      </a>
+
+      <a class="calc-card" href="calculatrices/oas-gis.html">
+        <span class="badge badge-new">Nouveau</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></svg>
+        </span>
+        <span class="tag">Retraite</span>
+        <h3>PSV + SRG</h3>
+        <p>Estimation de la Pension de la sécurité de la vieillesse et du Supplément de revenu garanti, en fonction de votre revenu.</p>
+        <span class="arrow">Ouvrir le calculateur →</span>
+      </a>
+
+      <a class="calc-card" href="calculatrices/impot-quebec.html">
+        <span class="badge badge-new">Nouveau</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+        </span>
+        <span class="tag">Fiscalité</span>
+        <h3>Impôt Québec</h3>
+        <p>Estimateur d'impôt simplifié : combinaison salaire, dividendes, gains en capital et REER. Calcule votre taux marginal et effectif.</p>
+        <span class="arrow">Ouvrir le calculateur →</span>
+      </a>
+
+      <a class="calc-card" href="calculatrices/valeur-nette.html">
+        <span class="badge badge-new">Nouveau</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V3M3 21h18M7 16v-5M11 16v-9M15 16v-3M19 16v-7"/></svg>
+        </span>
+        <span class="tag">Patrimoine</span>
+        <h3>Valeur nette</h3>
+        <p>Faites le bilan rapide de vos actifs et de vos dettes pour visualiser votre patrimoine net en un coup d'œil.</p>
         <span class="arrow">Ouvrir le calculateur →</span>
       </a>
 
       <a class="calc-card" href="calculatrices/retraite.html">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V8l8-4 8 4v12M9 20v-6h6v6"/></svg>
+        </span>
         <span class="tag">Retraite</span>
         <h3>Calculateur retraite</h3>
         <p>Estimez votre capital à la retraite et combien d'années de revenu il pourrait couvrir.</p>
         <span class="arrow">Ouvrir le calculateur →</span>
       </a>
 
+      <a class="calc-card" href="calculatrices/salaire-vs-dividendes.html">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+        </span>
+        <span class="tag">Entrepreneur</span>
+        <h3>Salaire vs dividendes</h3>
+        <p>Estimez l'impôt corporatif et personnel d'une stratégie salaire, dividendes ou mixte pour votre PME québécoise.</p>
+        <span class="arrow">Ouvrir le calculateur →</span>
+      </a>
+
       <a class="calc-card" href="calculatrices/hypotheque-vs-investissement.html">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9z"/></svg>
+        </span>
         <span class="tag">Décision</span>
         <h3>Hypothèque vs investissement</h3>
         <p>Faut-il rembourser l'hypothèque plus vite ou investir? Comparez les deux scénarios sur votre horizon.</p>
@@ -79,10 +157,78 @@
   </div>
 </section>
 
-<section class="section section-soft" id="a-propos">
+<section class="section section-alt">
+  <div class="container">
+    <h2>Catégories</h2>
+    <p class="muted">Trouvez les outils et guides selon votre situation.</p>
+
+    <div class="cat-grid">
+      <a class="calc-card" href="retraite/">
+        <span class="tag">Retraite</span>
+        <h3>Préparer sa retraite au Québec</h3>
+        <p>Calculateurs RRQ, PSV/SRG, retraite, REER vs CELI, plus le guide complet retraite Québec.</p>
+        <span class="arrow">Voir la section →</span>
+      </a>
+      <a class="calc-card" href="impot/">
+        <span class="tag">Impôt</span>
+        <h3>Optimiser son impôt</h3>
+        <p>Estimateur d'impôt Québec, REER vs CELI, marges marginales, et le guide REER ou CELI.</p>
+        <span class="arrow">Voir la section →</span>
+      </a>
+      <a class="calc-card" href="entrepreneurs/">
+        <span class="tag">Entrepreneurs</span>
+        <h3>Entrepreneur ou travailleur autonome</h3>
+        <p>Salaire vs dividendes, planification corporative, plus le guide complet pour les propriétaires de PME.</p>
+        <span class="arrow">Voir la section →</span>
+      </a>
+      <a class="calc-card" href="guides/">
+        <span class="tag">Articles</span>
+        <h3>Tous les guides</h3>
+        <p>Articles longs et structurés sur les grandes décisions financières des Québécois : REER ou CELI, retraite, etc.</p>
+        <span class="arrow">Voir la section →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Guides détaillés</h2>
+    <p class="muted">Articles longs pour bien comprendre les grandes décisions financières au Québec.</p>
+
+    <div class="card-grid">
+      <a class="calc-card" href="guides/reer-ou-celi.html">
+        <span class="tag">Guide</span>
+        <h3>REER ou CELI au Québec : lequel choisir?</h3>
+        <p>Comparaison complète : avantages, scénarios concrets, erreurs fréquentes et règles simples pour décider.</p>
+        <span class="arrow">Lire le guide →</span>
+      </a>
+      <a class="calc-card" href="guides/salaire-vs-dividende.html">
+        <span class="tag">Guide</span>
+        <h3>Salaire ou dividendes pour un entrepreneur québécois?</h3>
+        <p>Stratégies de rémunération en société par actions au Québec : avantages, pièges, mix optimal.</p>
+        <span class="arrow">Lire le guide →</span>
+      </a>
+      <a class="calc-card" href="guides/retraite-quebec.html">
+        <span class="tag">Guide</span>
+        <h3>Retraite au Québec : combien faut-il vraiment?</h3>
+        <p>RRQ, PSV, SRG, FERR, règle du 4 %, et les bons ordres de grandeur selon votre style de vie.</p>
+        <span class="arrow">Lire le guide →</span>
+      </a>
+      <a class="calc-card" href="guides/acheter-ou-louer.html">
+        <span class="tag">Guide</span>
+        <h3>Acheter ou louer au Québec?</h3>
+        <p>Au-delà de l'émotionnel : analyse mathématique, coûts cachés, et seuils où chaque option l'emporte.</p>
+        <span class="arrow">Lire le guide →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="a-propos">
   <div class="container article-content">
     <h2>Pourquoi un site de calculateurs québécois?</h2>
-    <p>Beaucoup d'outils financiers en ligne sont conçus pour le marché américain ou pour le « Canada moyen » et passent à côté des particularités du Québec : double palier d'imposition, RRQ, RQAP, crédit d'impôt pour dividendes provinciaux, fiscalité des sociétés québécoises, etc. <strong>FinanceQc</strong> propose des calculateurs simples, transparents et explicites.</p>
+    <p>Beaucoup d'outils financiers en ligne sont conçus pour le marché américain ou pour le « Canada moyen » et passent à côté des particularités du Québec : double palier d'imposition, RRQ (qui se calcule différemment du RPC), RQAP, crédit d'impôt pour dividendes provinciaux, fiscalité des sociétés québécoises, etc. <strong>FinanceQc</strong> propose des calculateurs simples, transparents et explicites — et des guides pour bien les utiliser.</p>
 
     <h3>Notre philosophie</h3>
     <ul>
@@ -92,8 +238,15 @@
       <li><strong>Français d'abord</strong> : le contenu est rédigé pour des Québécois et adapté à leur réalité fiscale.</li>
     </ul>
 
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M12 22v-2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>
+      <div>
+        <strong>Astuce :</strong> tous nos calculateurs gardent vos saisies pendant que vous naviguez sur la page. Changez un paramètre, recliquez sur « Calculer », et regardez l'écart.
+      </div>
+    </div>
+
     <div class="notice mt-3">
-      <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil fiscal, financier ou juridique. Pour une décision importante, consultez un professionnel autorisé.
+      <strong>Avertissement :</strong> Information générale seulement. Ne constitue pas un conseil fiscal, financier ou juridique. Pour une décision importante, consultez un professionnel autorisé. Ces calculs sont fournis à titre indicatif seulement.
     </div>
   </div>
 </section>
@@ -106,28 +259,37 @@
         <p>Calculateurs financiers et fiscaux gratuits pour les Québécois. Faits pour comprendre, pas pour vendre.</p>
       </div>
       <div>
-        <h4>Calculateurs</h4>
+        <h4>Calculatrices</h4>
         <ul>
           <li><a href="calculatrices/reer-vs-celi.html">REER vs CELI</a></li>
-          <li><a href="calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a></li>
+          <li><a href="calculatrices/rrq.html">Rente RRQ</a></li>
+          <li><a href="calculatrices/oas-gis.html">PSV + SRG</a></li>
+          <li><a href="calculatrices/impot-quebec.html">Impôt Québec</a></li>
+          <li><a href="calculatrices/valeur-nette.html">Valeur nette</a></li>
           <li><a href="calculatrices/retraite.html">Retraite</a></li>
+          <li><a href="calculatrices/salaire-vs-dividendes.html">Salaire vs dividendes</a></li>
           <li><a href="calculatrices/hypotheque-vs-investissement.html">Hypothèque vs investissement</a></li>
         </ul>
       </div>
       <div>
-        <h4>À savoir</h4>
+        <h4>Guides</h4>
         <ul>
-          <li>Information générale seulement.</li>
-          <li>Ne constitue pas un conseil professionnel.</li>
-          <li>Calculs effectués dans le navigateur.</li>
+          <li><a href="guides/reer-ou-celi.html">REER ou CELI</a></li>
+          <li><a href="guides/salaire-vs-dividende.html">Salaire vs dividendes</a></li>
+          <li><a href="guides/retraite-quebec.html">Retraite Québec</a></li>
+          <li><a href="guides/acheter-ou-louer.html">Acheter ou louer</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      © <span data-current-year></span> FinanceQc. Tous droits réservés. Les calculs proposés sont des estimations approximatives à des fins éducatives.
+      © <span data-current-year></span> FinanceQc. Les calculs proposés sont des estimations à titre indicatif seulement.
     </div>
   </div>
 </footer>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <script src="assets/js/main.js"></script>
 </body>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur d'impôt Québec — Estimation simplifiée fédéral + provincial</title>
+<meta name="description" content="Estimateur d'impôt québécois rapide : combinaison salaire, dividendes, gains en capital, REER. Calcule votre impôt total, votre revenu net, votre taux marginal et effectif.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/impot-quebec.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculateur d'impôt Québec">
+<meta property="og:description" content="Estimateur d'impôt québécois simple : salaire, dividendes, gains en capital, REER.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="../"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <div class="nav-group">
+        <a href="../calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="reer-vs-celi.html">REER vs CELI</a>
+          <a href="rrq.html">Rente RRQ</a>
+          <a href="oas-gis.html">PSV + SRG</a>
+          <a href="retraite.html">Retraite</a>
+          <a href="impot-quebec.html">Impôt Québec</a>
+          <a href="valeur-nette.html">Valeur nette</a>
+          <a href="salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="../guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="../guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="../guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="../guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="../retraite/">Retraite</a>
+      <a href="../impot/">Impôt</a>
+      <a href="../entrepreneurs/">Entrepreneurs</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="../">Accueil</a> › <a href="../calculatrices/">Calculatrices</a> › <span>Impôt Québec</span>
+  </nav>
+
+  <h1>Estimateur d'impôt simplifié — Québec</h1>
+  <p class="lede muted">Combien d'impôt fédéral et provincial vais-je payer cette année? Cet outil combine vos différentes sources de revenu (salaire, dividendes, gains en capital) et vos cotisations REER pour vous donner un ordre de grandeur rapide.</p>
+
+  <div class="notice">
+    <strong>Approximation :</strong> ce calculateur applique les paliers d'imposition fédéraux 2025 (avec abattement Québec de 16,5 %) et provinciaux 2025, ainsi qu'un seul montant personnel de base. Il ne reproduit pas les nombreux crédits non remboursables (frais médicaux, dons, frais de scolarité, etc.).
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field">
+        <label for="salaire">Revenu d'emploi / travail autonome ($)</label>
+        <input type="number" id="salaire" min="0" step="500" value="80000">
+      </div>
+
+      <div class="field">
+        <label for="dividendes">Dividendes reçus ($)</label>
+        <input type="number" id="dividendes" min="0" step="500" value="0">
+        <div class="hint">Approximation : taux effectif global ~35 % appliqué (dividendes ordinaires).</div>
+      </div>
+
+      <div class="field">
+        <label for="gainsCapital">Gains en capital réalisés ($)</label>
+        <input type="number" id="gainsCapital" min="0" step="500" value="0">
+        <div class="hint">50 % imposable au taux marginal.</div>
+      </div>
+
+      <div class="field">
+        <label for="cotisationReer">Cotisations REER ($)</label>
+        <input type="number" id="cotisationReer" min="0" step="500" value="6000">
+        <div class="hint">Déduction directe du revenu imposable.</div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcImpotQc()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile highlight">
+          <div class="label">Impôt total estimé</div>
+          <div class="value" id="r-impot-total">—</div>
+        </div>
+        <div class="result-tile highlight">
+          <div class="label">Revenu net</div>
+          <div class="value" id="r-revenu-net">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Taux marginal</div>
+          <div class="value" id="r-taux-marginal">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Taux effectif</div>
+          <div class="value" id="r-taux-effectif">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Revenu imposable (après REER)</div>
+          <div class="value" id="r-revenu-imposable">—</div>
+        </div>
+      </div>
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <div class="notice">
+    <strong>Avis :</strong> Ces calculs sont fournis à titre indicatif seulement. Pour une estimation précise, utilisez un logiciel d'impôt certifié ou consultez un comptable.
+  </div>
+
+  <article class="article-content section">
+    <h2>Comprendre votre impôt au Québec</h2>
+    <p>Le Québec est la <strong>seule province canadienne à percevoir et administrer son propre impôt</strong>. Cela explique le double palier (fédéral + provincial) et l'abattement Québec de 16,5 % qui réduit l'impôt fédéral payable. Les contribuables québécois remplissent <strong>deux déclarations</strong> chaque année : une à l'ARC et une à Revenu Québec.</p>
+
+    <h3>Paliers d'imposition simplifiés (2025)</h3>
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Tranche de revenu</th><th>Fédéral (après abattement)</th><th>Québec</th><th>Combiné</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0 – 18 571 $</td><td>0 %</td><td>0 %</td><td>0 %</td></tr>
+          <tr><td>18 571 – 53 255 $</td><td>~12,5 %</td><td>14 %</td><td>~26,5 % à 27,5 %</td></tr>
+          <tr><td>53 256 – 106 555 $</td><td>~17,1 %</td><td>19 %</td><td>~36,1 % à 37,1 %</td></tr>
+          <tr><td>106 556 – 129 590 $</td><td>~21,7 %</td><td>24 %</td><td>~45,7 %</td></tr>
+          <tr><td>129 591 – 173 205 $</td><td>~21,7 %</td><td>25,75 %</td><td>~47,5 %</td></tr>
+          <tr><td>173 206 – 246 752 $</td><td>~24,2 %</td><td>25,75 %</td><td>~50 %</td></tr>
+          <tr><td>246 753 $ et plus</td><td>~27,6 %</td><td>25,75 %</td><td>~53,3 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Différents types de revenu, différents traitements</h3>
+    <ul>
+      <li><strong>Salaire et travail autonome :</strong> imposable à 100 %. Soumis aux cotisations RRQ, RQAP, AE.</li>
+      <li><strong>Dividendes admissibles</strong> (grandes sociétés cotées) : majoration de 38 %, puis crédit d'impôt fédéral de 15,02 % et provincial de 11,7 %. Taux effectif global plus bas qu'un salaire pour certains revenus.</li>
+      <li><strong>Dividendes non admissibles</strong> (PME) : majoration de 15 %, crédits réduits. Taux effectif plus élevé que les dividendes admissibles.</li>
+      <li><strong>Gains en capital :</strong> 50 % imposable au taux marginal. Soit un taux effectif de la moitié de votre marginal.</li>
+      <li><strong>Intérêts :</strong> imposables à 100 %, pleinement au taux marginal.</li>
+    </ul>
+
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+      <div><strong>Utile à savoir :</strong> votre <em>taux marginal</em> détermine la valeur d'une déduction REER, de chaque dollar additionnel de revenu, et d'un don de bienfaisance. Votre <em>taux effectif</em> est ce que vous payez vraiment globalement. Les deux sont très différents.</div>
+    </div>
+
+    <h3>Comment réduire son impôt légalement au Québec</h3>
+    <ol>
+      <li><strong>Maximiser le REER</strong> tant que votre taux marginal actuel dépasse le taux marginal anticipé à la retraite.</li>
+      <li><strong>Utiliser le CELI pour le rendement non imposable</strong> à long terme.</li>
+      <li><strong>Réaliser les pertes en capital</strong> pour annuler les gains de l'année (ou reporter).</li>
+      <li><strong>Cotiser au CELIAPP</strong> si vous prévoyez acheter une première propriété : déduction comme le REER + retrait non imposable comme le CELI.</li>
+      <li><strong>Optimiser la rémunération</strong> en société : voir notre <a href="salaire-vs-dividendes.html">calculateur salaire vs dividendes</a>.</li>
+      <li><strong>Fractionner le revenu</strong> avec un conjoint : pension fractionnée, prêt à taux prescrit, etc.</li>
+    </ol>
+
+    <h3>Limites du calcul</h3>
+    <ul>
+      <li>Pas de modélisation du gross-up et crédit pour dividendes (taux effectif simplifié).</li>
+      <li>Pas de cotisations RRQ, RQAP, AE.</li>
+      <li>Pas de prise en compte des crédits non remboursables détaillés (frais médicaux, dons, etc.).</li>
+      <li>Un seul montant personnel — peut différer pour personne âgée, handicap, etc.</li>
+    </ul>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>Comment réduire son impôt au Québec?</summary>
+      <p>Les leviers les plus puissants : maximiser le REER (si taux marginal élevé), utiliser pleinement le CELI, vendre des positions en perte pour neutraliser des gains, cotiser au CELIAPP si admissible, optimiser la rémunération en société pour les entrepreneurs. Pour les couples, le fractionnement du revenu de pension après 65 ans est très efficace.</p>
+    </details>
+
+    <details>
+      <summary>Pourquoi paie-t-on deux impôts au Québec?</summary>
+      <p>Le Québec est la seule province à administrer son propre impôt sur le revenu. Vous remplissez donc deux déclarations (ARC + Revenu Québec) chaque année. Pour compenser, l'impôt fédéral est réduit de 16,5 % via l'abattement Québec.</p>
+    </details>
+
+    <details>
+      <summary>Quel est le taux marginal le plus élevé au Québec?</summary>
+      <p>Environ 53,3 % combiné fédéral + provincial sur les revenus dépassant 246 752 $ en 2025. Au-delà de ce seuil, chaque dollar additionnel de salaire est divisé presque moitié-moitié entre le contribuable et les deux paliers de gouvernement.</p>
+    </details>
+
+    <details>
+      <summary>Les gains en capital sont-ils toujours imposés à 50 %?</summary>
+      <p>Pour les particuliers, en 2025, le taux d'inclusion reste à 50 % pour les premiers 250 000 $ de gains annuels, et à 66,67 % au-delà (selon les règles fédérales en vigueur — vérifiez l'application provinciale). C'est un point en mouvement : consultez les règles de l'année.</p>
+    </details>
+
+    <details>
+      <summary>Le REER est-il toujours avantageux?</summary>
+      <p>Non. Le REER bat le CELI seulement quand le taux marginal au moment de la cotisation est plus élevé que celui anticipé au retrait. Pour un revenu modeste, le CELI est souvent supérieur. Voir notre <a href="reer-vs-celi.html">calculateur REER vs CELI</a> et notre <a href="../guides/reer-ou-celi.html">guide complet</a>.</p>
+    </details>
+  </section>
+
+  <section class="related" aria-labelledby="rel-title">
+    <h2 id="rel-title">Calculateurs et guides reliés</h2>
+    <div class="related-grid">
+      <a class="related-card" href="reer-vs-celi.html">
+        <div class="label">Calculateur</div>
+        <div class="title">REER vs CELI</div>
+      </a>
+      <a class="related-card" href="salaire-vs-dividendes.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Salaire vs dividendes</div>
+      </a>
+      <a class="related-card" href="valeur-nette.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Valeur nette</div>
+      </a>
+      <a class="related-card" href="../guides/reer-ou-celi.html">
+        <div class="label">Guide complet</div>
+        <div class="title">REER ou CELI : lequel choisir?</div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculatrices</h4>
+        <ul>
+          <li><a href="reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="rrq.html">Rente RRQ</a></li>
+          <li><a href="oas-gis.html">PSV + SRG</a></li>
+          <li><a href="impot-quebec.html">Impôt Québec</a></li>
+          <li><a href="valeur-nette.html">Valeur nette</a></li>
+          <li><a href="retraite.html">Retraite</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Guides</h4>
+        <ul>
+          <li><a href="../guides/reer-ou-celi.html">REER ou CELI</a></li>
+          <li><a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a></li>
+          <li><a href="../guides/retraite-quebec.html">Retraite Québec</a></li>
+          <li><a href="../guides/acheter-ou-louer.html">Acheter ou louer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations à titre indicatif seulement.
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"Comment réduire son impôt au Québec?","acceptedAnswer":{"@type":"Answer","text":"Les leviers principaux : maximiser le REER si taux marginal élevé, utiliser pleinement le CELI, réaliser les pertes en capital, cotiser au CELIAPP, optimiser la rémunération en société, et fractionner le revenu de pension après 65 ans."}},
+    {"@type":"Question","name":"Pourquoi paie-t-on deux impôts au Québec?","acceptedAnswer":{"@type":"Answer","text":"Le Québec administre son propre impôt sur le revenu. Vous remplissez deux déclarations (ARC + Revenu Québec). Pour compenser, l'impôt fédéral est réduit de 16,5 % via l'abattement Québec."}},
+    {"@type":"Question","name":"Quel est le taux marginal le plus élevé au Québec?","acceptedAnswer":{"@type":"Answer","text":"Environ 53,3 % combiné fédéral + provincial sur les revenus dépassant 246 752 $ en 2025."}},
+    {"@type":"Question","name":"Les gains en capital sont-ils toujours imposés à 50 %?","acceptedAnswer":{"@type":"Answer","text":"Pour les particuliers en 2025, le taux d'inclusion reste à 50 % pour les premiers 250 000 $ de gains annuels, et à 66,67 % au-delà selon les règles fédérales en vigueur."}},
+    {"@type":"Question","name":"Le REER est-il toujours avantageux?","acceptedAnswer":{"@type":"Answer","text":"Non. Le REER bat le CELI seulement quand le taux marginal à la cotisation dépasse le taux marginal anticipé au retrait. Pour un revenu modeste, le CELI est souvent supérieur."}}
+  ]
+}
+</script>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/calculators.js"></script>
+</body>
+</html>

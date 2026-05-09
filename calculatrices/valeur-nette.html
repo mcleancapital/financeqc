@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur de valeur nette — Bilan personnel des Québécois</title>
+<meta name="description" content="Calculez votre valeur nette : actifs (maison, REER, CELI, placements) moins passifs (hypothèque, dettes). Visualisation graphique simple et interprétation claire.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/valeur-nette.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculateur de valeur nette (Québec)">
+<meta property="og:description" content="Faites le bilan rapide de votre patrimoine net : actifs - passifs, avec graphique simple.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="../"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <div class="nav-group">
+        <a href="../calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="reer-vs-celi.html">REER vs CELI</a>
+          <a href="rrq.html">Rente RRQ</a>
+          <a href="oas-gis.html">PSV + SRG</a>
+          <a href="retraite.html">Retraite</a>
+          <a href="impot-quebec.html">Impôt Québec</a>
+          <a href="valeur-nette.html">Valeur nette</a>
+          <a href="salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="../guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="../guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="../guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="../guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="../retraite/">Retraite</a>
+      <a href="../impot/">Impôt</a>
+      <a href="../entrepreneurs/">Entrepreneurs</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="../">Accueil</a> › <a href="../calculatrices/">Calculatrices</a> › <span>Valeur nette</span>
+  </nav>
+
+  <h1>Calculateur de valeur nette</h1>
+  <p class="lede muted">Combien valez-vous, financièrement parlant? La valeur nette = actifs − passifs. Cet outil dresse un bilan rapide et visuel pour vous donner un point de départ clair.</p>
+
+  <div class="notice">
+    <strong>À propos :</strong> ce calculateur reste local à votre navigateur. Aucune donnée n'est envoyée. Vous pouvez l'utiliser comme bilan personnel ou comme première étape d'un plan financier.
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos actifs et passifs</h2>
+
+      <h3 style="font-size:1rem;margin-top:0.5rem;">Actifs</h3>
+
+      <div class="field">
+        <label for="maison">Valeur marchande de la maison ($)</label>
+        <input type="number" id="maison" min="0" step="1000" value="500000">
+        <div class="hint">Estimation actuelle. La valeur municipale est souvent inférieure.</div>
+      </div>
+
+      <div class="field">
+        <label for="placements">Placements non enregistrés ($)</label>
+        <input type="number" id="placements" min="0" step="500" value="20000">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="vnReer">REER ($)</label>
+          <input type="number" id="vnReer" min="0" step="500" value="60000">
+        </div>
+        <div class="field">
+          <label for="vnCeli">CELI ($)</label>
+          <input type="number" id="vnCeli" min="0" step="500" value="40000">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="autresActifs">Autres actifs (auto, oeuvres, société, etc.) ($)</label>
+        <input type="number" id="autresActifs" min="0" step="500" value="15000">
+      </div>
+
+      <h3 style="font-size:1rem;margin-top:1rem;">Passifs</h3>
+
+      <div class="field">
+        <label for="hypotheque">Solde hypothécaire ($)</label>
+        <input type="number" id="hypotheque" min="0" step="1000" value="280000">
+      </div>
+
+      <div class="field">
+        <label for="dettes">Autres dettes (cartes, marges, prêts) ($)</label>
+        <input type="number" id="dettes" min="0" step="500" value="5000">
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcValeurNette()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Votre bilan</h2>
+      <div class="results-grid">
+        <div class="result-tile">
+          <div class="label">Actifs totaux</div>
+          <div class="value" id="r-actifs">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Passifs totaux</div>
+          <div class="value" id="r-passifs">—</div>
+        </div>
+        <div class="result-tile highlight" style="grid-column: 1 / -1;">
+          <div class="label">Valeur nette</div>
+          <div class="value" id="r-valeur-nette">—</div>
+        </div>
+      </div>
+
+      <div class="bar-chart" id="r-chart" aria-label="Répartition des actifs et passifs"></div>
+
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <div class="notice">
+    <strong>Avis :</strong> Ces calculs sont fournis à titre indicatif seulement. Pour une vraie planification, considérez aussi l'impôt latent sur le REER, les frais de disposition d'une maison, etc.
+  </div>
+
+  <article class="article-content section">
+    <h2>Pourquoi calculer sa valeur nette?</h2>
+    <p>La <strong>valeur nette</strong> est le meilleur indicateur unique de votre santé financière. Plus utile que le revenu : un médecin qui dépense tout chaque mois peut avoir une valeur nette inférieure à un enseignant qui épargne 20 % depuis 25 ans. La valeur nette montre la réalité accumulée, pas le flux mensuel.</p>
+
+    <h3>Repères québécois (ordres de grandeur)</h3>
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Étape de vie</th><th>Valeur nette type</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>25-30 ans</td><td>−20 000 $ à 50 000 $</td><td>Souvent négative à cause des prêts étudiants et de l'auto.</td></tr>
+          <tr><td>30-40 ans</td><td>50 000 $ à 250 000 $</td><td>Hypothèque qui se rembourse + premier capital REER/CELI.</td></tr>
+          <tr><td>40-55 ans</td><td>250 000 $ à 1 M$</td><td>Pic d'épargne. La maison se rembourse, la valeur grimpe.</td></tr>
+          <tr><td>55-65 ans</td><td>500 000 $ à 2 M$</td><td>Phase d'accumulation finale avant la retraite.</td></tr>
+          <tr><td>65 ans +</td><td>variable</td><td>Décaissement structuré : la valeur nette diminue souvent volontairement.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">Ces chiffres sont des ordres de grandeur très généraux. Une infirmière à Sherbrooke n'aura pas la même réalité qu'un consultant à Montréal — et c'est normal.</p>
+
+    <h3>Comment faire croître sa valeur nette?</h3>
+    <ol>
+      <li><strong>Augmenter le revenu net</strong> (formation, négociation, projets parallèles).</li>
+      <li><strong>Maîtriser les dépenses</strong> : viser une épargne de 15 % à 20 % du revenu brut.</li>
+      <li><strong>Investir l'épargne</strong>, pas la laisser dans un compte courant.</li>
+      <li><strong>Rembourser d'abord les dettes coûteuses</strong> (cartes 19,99 %, marges) avant d'investir.</li>
+      <li><strong>Profiter du temps</strong> : commencer tôt, même petit, bat commencer tard et gros.</li>
+    </ol>
+
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+      <div><strong>Astuce :</strong> calculer sa valeur nette une fois par année (par exemple le 1<sup>er</sup> janvier) est une excellente discipline. C'est le bilan personnel le plus important — et personne ne le fait à votre place.</div>
+    </div>
+
+    <h3>Limites du calcul</h3>
+    <ul>
+      <li><strong>Pas d'impôt latent.</strong> Un REER de 100 000 $ vaut moins net qu'un CELI de 100 000 $ — l'impôt à la sortie n'est pas comptabilisé ici.</li>
+      <li><strong>Valeur de la maison.</strong> Les frais de notaire, taxes mutation et commission lors de la vente ne sont pas déduits.</li>
+      <li><strong>Inflation.</strong> Comparer 2010 à 2025 sans ajustement masque la perte de pouvoir d'achat.</li>
+    </ul>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>Quelle est la valeur nette médiane d'un Québécois?</summary>
+      <p>Selon les données Statistique Canada (enquête sur la sécurité financière), la médiane d'une famille québécoise tourne autour de 250 000 $ à 350 000 $, fortement portée par la valeur des résidences. La distribution est très inégale : la moyenne est presque deux fois la médiane.</p>
+    </details>
+
+    <details>
+      <summary>Faut-il inclure la valeur de l'auto dans son bilan?</summary>
+      <p>Oui, mais à sa valeur revente actuelle, pas à son prix d'achat. Une auto neuve perd 20-25 % la première année. Pour les vraies évaluations, utilisez la valeur du Guide de l'auto ou Kelley Blue Book.</p>
+    </details>
+
+    <details>
+      <summary>Faut-il déduire l'impôt latent du REER?</summary>
+      <p>Pour un calcul rigoureux, oui : le REER de 100 000 $ retiré à 35 % d'impôt vaut 65 000 $ net. Pour un bilan rapide, on garde le brut, mais on garde en tête que ce dollar n'est pas équivalent à un dollar de CELI ou de placement non enregistré.</p>
+    </details>
+
+    <details>
+      <summary>Comment savoir si ma valeur nette est « normale »?</summary>
+      <p>Plutôt que de la comparer à des moyennes, comparez votre valeur nette à votre <em>revenu annuel</em>. À 30 ans, viser environ 1 fois le revenu annuel est un bon repère. À 50 ans, environ 5 fois. À 65 ans, environ 10 à 12 fois pour une retraite confortable. Bien plus utile qu'une moyenne nationale.</p>
+    </details>
+
+    <details>
+      <summary>La maison compte-t-elle vraiment dans la valeur nette?</summary>
+      <p>Oui, mais avec une nuance : c'est un actif que vous habitez. Difficile à liquider sans déménager. Pour la planification de retraite, on regarde souvent la « valeur nette investissable » (excluant la résidence) — c'est elle qui paiera votre épicerie.</p>
+    </details>
+  </section>
+
+  <section class="related" aria-labelledby="rel-title">
+    <h2 id="rel-title">Calculateurs et guides reliés</h2>
+    <div class="related-grid">
+      <a class="related-card" href="retraite.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Capital retraite</div>
+      </a>
+      <a class="related-card" href="reer-vs-celi.html">
+        <div class="label">Calculateur</div>
+        <div class="title">REER vs CELI</div>
+      </a>
+      <a class="related-card" href="hypotheque-vs-investissement.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Hypothèque vs investissement</div>
+      </a>
+      <a class="related-card" href="../guides/acheter-ou-louer.html">
+        <div class="label">Guide complet</div>
+        <div class="title">Acheter ou louer au Québec?</div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculatrices</h4>
+        <ul>
+          <li><a href="reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="rrq.html">Rente RRQ</a></li>
+          <li><a href="oas-gis.html">PSV + SRG</a></li>
+          <li><a href="impot-quebec.html">Impôt Québec</a></li>
+          <li><a href="valeur-nette.html">Valeur nette</a></li>
+          <li><a href="retraite.html">Retraite</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Guides</h4>
+        <ul>
+          <li><a href="../guides/reer-ou-celi.html">REER ou CELI</a></li>
+          <li><a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a></li>
+          <li><a href="../guides/retraite-quebec.html">Retraite Québec</a></li>
+          <li><a href="../guides/acheter-ou-louer.html">Acheter ou louer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations à titre indicatif seulement.
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"Quelle est la valeur nette médiane d'un Québécois?","acceptedAnswer":{"@type":"Answer","text":"La médiane d'une famille québécoise tourne autour de 250 000 $ à 350 000 $ selon Statistique Canada, fortement portée par la résidence. La distribution est très inégale, donc la moyenne est presque le double de la médiane."}},
+    {"@type":"Question","name":"Faut-il inclure la valeur de l'auto?","acceptedAnswer":{"@type":"Answer","text":"Oui, à sa valeur revente actuelle, pas au prix d'achat. Une auto neuve perd 20-25 % la première année."}},
+    {"@type":"Question","name":"Faut-il déduire l'impôt latent du REER?","acceptedAnswer":{"@type":"Answer","text":"Pour un calcul rigoureux, oui : un REER de 100 000 $ retiré à 35 % vaut 65 000 $ net. Pour un bilan rapide, on garde le brut tout en gardant en tête la différence."}},
+    {"@type":"Question","name":"Comment savoir si ma valeur nette est normale?","acceptedAnswer":{"@type":"Answer","text":"Comparez-la à votre revenu annuel : ~1x à 30 ans, ~5x à 50 ans, ~10-12x à 65 ans pour une retraite confortable."}},
+    {"@type":"Question","name":"La maison compte-t-elle dans la valeur nette?","acceptedAnswer":{"@type":"Answer","text":"Oui, mais c'est un actif difficile à liquider sans déménager. Pour la planification retraite, on isole souvent la valeur nette investissable, hors résidence."}}
+  ]
+}
+</script>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/calculators.js"></script>
+</body>
+</html>

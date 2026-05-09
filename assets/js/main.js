@@ -11,6 +11,31 @@
   const yearEls = document.querySelectorAll("[data-current-year]");
   const year = new Date().getFullYear();
   yearEls.forEach((el) => (el.textContent = year));
+
+  // Temps de lecture : compte les mots de l'article et écrit dans [data-reading-time]
+  document.querySelectorAll("[data-reading-time]").forEach((el) => {
+    const targetSel = el.getAttribute("data-reading-time");
+    const target = targetSel ? document.querySelector(targetSel) : null;
+    if (!target) return;
+    const text = target.textContent || "";
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    const minutes = Math.max(1, Math.round(words / 220));
+    el.textContent = `${minutes} min de lecture`;
+  });
+
+  // Bouton retour-haut
+  const toTop = document.querySelector(".to-top");
+  if (toTop) {
+    const onScroll = () => {
+      if (window.scrollY > 320) toTop.classList.add("is-visible");
+      else toTop.classList.remove("is-visible");
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    toTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 })();
 
 /* Formatteurs réutilisés par les calculateurs */

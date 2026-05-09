@@ -612,3 +612,515 @@ table tbody tr:hover {
 
 .breadcrumbs a { color: var(--color-text-muted); }
 .breadcrumbs a:hover { color: var(--color-primary); }
+
+/* =========================================================
+   PHASE 2 — Composants avancés
+   ========================================================= */
+
+/* ---------- Navigation par catégories ---------- */
+.site-nav .nav-group {
+  position: relative;
+}
+
+.site-nav .nav-group > a,
+.site-nav .nav-group > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 0;
+}
+
+.site-nav .nav-group > a::after {
+  content: "▾";
+  font-size: 0.7rem;
+  margin-left: 0.2rem;
+  color: var(--color-text-muted);
+}
+
+.site-nav .nav-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  min-width: 240px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  z-index: 60;
+}
+
+.site-nav .nav-group:hover .nav-dropdown,
+.site-nav .nav-group:focus-within .nav-dropdown {
+  display: block;
+}
+
+.site-nav .nav-dropdown a {
+  display: block;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+}
+
+.site-nav .nav-dropdown a:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+@media (max-width: 860px) {
+  .site-nav { gap: 0.9rem; font-size: 0.9rem; }
+  .site-nav .nav-dropdown {
+    position: static;
+    box-shadow: none;
+    border: none;
+    padding: 0.2rem 0 0.4rem 0.8rem;
+    min-width: 0;
+    display: block;
+  }
+  .site-nav .nav-group > a::after { display: none; }
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.badge-popular {
+  background: var(--color-gold);
+  color: #3d2f00;
+}
+
+.badge-new {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.badge-tax {
+  background: #eef0f7;
+  color: var(--color-primary);
+}
+
+/* ---------- Cartes modernisées ---------- */
+.calc-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+}
+
+.calc-card .icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.4rem;
+}
+
+.calc-card .icon svg { width: 20px; height: 20px; }
+
+.calc-card .badge {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  margin-left: 0;
+}
+
+.calc-card.calc-card-accent {
+  border-color: #cfe6da;
+  background: linear-gradient(180deg, #fdfffd 0%, var(--color-accent-soft) 100%);
+}
+
+/* ---------- Sections alternées ---------- */
+.section-alt {
+  background: var(--color-bg-soft);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-tight { padding: 2rem 0; }
+.section-loose { padding: 4.5rem 0; }
+
+/* ---------- Callouts informatifs ---------- */
+.callout {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--color-primary);
+  background: var(--color-primary-soft);
+  margin: 1.4rem 0;
+  align-items: flex-start;
+  font-size: 0.95rem;
+}
+
+.callout .callout-icon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 0.15rem;
+  color: var(--color-primary);
+}
+
+.callout-tip {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+.callout-tip .callout-icon { color: var(--color-accent); }
+
+.callout-warn {
+  border-left-color: #d68a08;
+  background: var(--color-warning-bg);
+  color: #5d4a10;
+}
+.callout-warn .callout-icon { color: #b87800; }
+
+.callout-example {
+  border-left-color: var(--color-gold);
+  background: #fbf6e6;
+  color: #3d2f00;
+}
+.callout-example .callout-icon { color: var(--color-gold); }
+
+.callout strong { color: inherit; }
+
+.callout p:last-child { margin-bottom: 0; }
+
+/* ---------- Tableau comparatif ---------- */
+.compare-table {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.compare-table table { margin: 0; }
+
+.compare-table th,
+.compare-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.85rem 1rem;
+}
+
+.compare-table .col-good { color: var(--color-accent); font-weight: 600; }
+.compare-table .col-bad { color: #b8501e; font-weight: 600; }
+
+/* ---------- Calculateurs reliés ---------- */
+.related {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.related-card {
+  display: block;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #fff;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  color: inherit;
+}
+
+.related-card:hover {
+  border-color: #cdd7e2;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+}
+
+.related-card .label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.related-card .title {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-top: 0.15rem;
+}
+
+/* ---------- Méta-info guides (temps de lecture, date) ---------- */
+.meta-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.2rem;
+}
+
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.meta-pill svg { width: 14px; height: 14px; }
+
+/* ---------- Table des matières ---------- */
+.toc {
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.2rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.toc h2 {
+  margin: 0 0 0.6rem 0;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--color-text-muted);
+}
+
+.toc ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.95rem;
+}
+
+.toc li { margin-bottom: 0.25rem; }
+
+.toc a { color: var(--color-text); }
+.toc a:hover { color: var(--color-primary); }
+
+/* ---------- Étapes / scénarios ---------- */
+.steps {
+  list-style: none;
+  counter-reset: step;
+  padding: 0;
+  margin: 1.4rem 0;
+}
+
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0.85rem 1rem 0.85rem 3rem;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.65rem;
+}
+
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ---------- Scénarios (cartes côte à côte) ---------- */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.scenario {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.2rem;
+}
+
+.scenario h4 {
+  margin-top: 0;
+  font-size: 1rem;
+  color: var(--color-primary);
+}
+
+.scenario .scenario-result {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--color-border);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.scenario.scenario-bad .scenario-result { color: #b8501e; }
+
+/* ---------- Bouton retour-haut ---------- */
+.to-top {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease, background-color 0.18s ease;
+  z-index: 70;
+}
+
+.to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.to-top:hover { background: var(--color-primary-hover); color: #fff; }
+
+.to-top svg { width: 18px; height: 18px; }
+
+/* ---------- Hero secondaire (catégories/guides) ---------- */
+.hero-compact {
+  padding: 2.5rem 0 1.5rem;
+  background: linear-gradient(180deg, var(--color-primary-soft) 0%, var(--color-bg) 100%);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hero-compact h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+.hero-compact .lede { font-size: 1.05rem; max-width: 720px; }
+
+/* ---------- Petites améliorations typographiques ---------- */
+.article-content h2 {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.4rem;
+  margin-top: 2.5rem;
+}
+
+.article-content h2:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 1.5rem;
+}
+
+.article-content h3 { color: var(--color-primary); }
+
+.article-content blockquote {
+  margin: 1.4rem 0;
+  padding: 0.9rem 1.2rem;
+  border-left: 4px solid var(--color-gold);
+  background: #fdf8e7;
+  font-style: italic;
+  color: #3d2f00;
+  border-radius: var(--radius-sm);
+}
+
+.kicker {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--color-accent);
+  margin-bottom: 0.4rem;
+}
+
+/* ---------- Liste de cartes pour pages catégories ---------- */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+/* ---------- Graphique simple (valeur nette) ---------- */
+.bar-chart {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.bar-chart .bar-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 110px;
+  gap: 0.7rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.bar-chart .bar-track {
+  height: 14px;
+  background: var(--color-bg-muted);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-chart .bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.bar-chart .bar-fill.neg {
+  background: linear-gradient(90deg, #c0381f, #d68a08);
+}
+
+.bar-chart .bar-amount {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary);
+}
+
+.bar-chart .bar-amount.neg { color: #b8501e; }
+
+@media (max-width: 540px) {
+  .bar-chart .bar-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+  .bar-chart .bar-amount { text-align: left; }
+}

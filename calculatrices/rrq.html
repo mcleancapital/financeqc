@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur RRQ — Estimation de votre rente du Régime de rentes du Québec</title>
+<meta name="description" content="Estimez votre rente RRQ mensuelle et annuelle approximative en fonction de votre salaire moyen, votre âge de départ et vos années cotisées. Calculateur québécois gratuit.">
+<link rel="canonical" href="https://www.financeqc.ca/calculatrices/rrq.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calculateur RRQ — Estimation de votre rente">
+<meta property="og:description" content="Estimez votre rente RRQ approximative selon votre salaire et votre âge de départ.">
+<meta property="og:locale" content="fr_CA">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="../"><span class="brand-mark">FQ</span><span>FinanceQc</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <div class="nav-group">
+        <a href="../calculatrices/">Calculatrices</a>
+        <div class="nav-dropdown">
+          <a href="reer-vs-celi.html">REER vs CELI</a>
+          <a href="rrq.html">Rente RRQ</a>
+          <a href="oas-gis.html">PSV + SRG</a>
+          <a href="retraite.html">Retraite</a>
+          <a href="impot-quebec.html">Impôt Québec</a>
+          <a href="valeur-nette.html">Valeur nette</a>
+          <a href="salaire-vs-dividendes.html">Salaire vs dividendes</a>
+          <a href="hypotheque-vs-investissement.html">Hypothèque vs investissement</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="../guides/">Guides</a>
+        <div class="nav-dropdown">
+          <a href="../guides/reer-ou-celi.html">REER ou CELI</a>
+          <a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a>
+          <a href="../guides/retraite-quebec.html">Retraite au Québec</a>
+          <a href="../guides/acheter-ou-louer.html">Acheter ou louer</a>
+        </div>
+      </div>
+      <a href="../retraite/">Retraite</a>
+      <a href="../impot/">Impôt</a>
+      <a href="../entrepreneurs/">Entrepreneurs</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="../">Accueil</a> › <a href="../calculatrices/">Calculatrices</a> › <span>Rente RRQ</span>
+  </nav>
+
+  <h1>Calculateur de rente RRQ (Québec)</h1>
+  <p class="lede muted">Combien la Régie des rentes du Québec versera-t-elle à la retraite? Cet outil estime votre rente mensuelle et annuelle en fonction de votre salaire moyen, de votre âge de départ et du nombre d'années cotisées.</p>
+
+  <div class="notice">
+    <strong>Approximation :</strong> ce calculateur utilise les paramètres 2025 simplifiés. La rente officielle dépend de chacune de vos années de cotisation, des périodes pour soins aux enfants, du retrait de cotisations et d'autres ajustements. Pour le chiffre exact, consultez votre relevé de participation à Retraite Québec.
+  </div>
+
+  <div class="calc-layout">
+    <section class="form-card" aria-labelledby="form-title">
+      <h2 id="form-title">Vos paramètres</h2>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="ageActuel">Âge actuel</label>
+          <input type="number" id="ageActuel" min="18" max="80" step="1" value="40">
+        </div>
+        <div class="field">
+          <label for="ageRetraite">Âge de prise de la rente</label>
+          <input type="number" id="ageRetraite" min="60" max="72" step="1" value="65">
+          <div class="hint">Plage admissible : 60 à 72 ans.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="salaireMoyen">Salaire moyen de carrière ($)</label>
+        <input type="number" id="salaireMoyen" min="0" step="1000" value="60000">
+        <div class="hint">Plafonné automatiquement au MGAP (~71 300 $ en 2025).</div>
+      </div>
+
+      <div class="field">
+        <label for="anneesTravaillees">Nombre d'années de cotisation prévues</label>
+        <input type="number" id="anneesTravaillees" min="0" max="50" step="1" value="35">
+        <div class="hint">Idéalement 39 années entre 18 et 65 ans (avec retrait des 15 % les plus faibles).</div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="button" onclick="calcRRQ()">Calculer</button>
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('results').hidden = true">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="results-card" id="results" hidden aria-live="polite">
+      <h2>Résultats estimés</h2>
+      <div class="results-grid">
+        <div class="result-tile highlight">
+          <div class="label">Rente mensuelle</div>
+          <div class="value" id="r-rrq-mois">—</div>
+        </div>
+        <div class="result-tile highlight">
+          <div class="label">Rente annuelle</div>
+          <div class="value" id="r-rrq-annee">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Rente de base à 65 ans</div>
+          <div class="value" id="r-rrq-base">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="label">Bonification / réduction</div>
+          <div class="value" id="r-rrq-facteur">—</div>
+        </div>
+      </div>
+      <div class="summary-box" id="r-summary"></div>
+    </section>
+  </div>
+
+  <div class="notice">
+    <strong>Avis :</strong> Ces calculs sont fournis à titre indicatif seulement. Ils ne remplacent pas une consultation avec un planificateur financier ni votre relevé officiel à Retraite Québec.
+  </div>
+
+  <article class="article-content section">
+    <h2>Comment se calcule la rente RRQ?</h2>
+    <p>La <strong>rente du Régime de rentes du Québec</strong> est une rente viagère, indexée chaque année, financée par les cotisations des travailleurs et des employeurs. Elle s'ajoute à la PSV fédérale et au SRG (Supplément de revenu garanti). Le calcul officiel tient compte de toute votre carrière, en éliminant 15 % des plus faibles années pour ne pas pénaliser les périodes de revenus plus bas.</p>
+
+    <h3>Les facteurs qui influencent votre rente</h3>
+    <ul>
+      <li><strong>Le salaire admissible annuel</strong>, plafonné au MGAP (Maximum des gains admissibles : ~71 300 $ en 2025). Tout dollar gagné au-dessus n'augmente pas votre rente.</li>
+      <li><strong>Le nombre d'années cotisées.</strong> Idéalement 39 années pour atteindre une rente complète (47 années moins 15 % éliminées).</li>
+      <li><strong>L'âge auquel vous commencez à recevoir la rente.</strong> C'est probablement le levier le plus puissant.</li>
+    </ul>
+
+    <h3>Bonification ou réduction selon l'âge</h3>
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Âge de prise de rente</th><th>Ajustement vs 65 ans</th><th>Effet à vie</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>60 ans</td><td>−36 %</td><td class="col-bad">Permanent : choix utile uniquement si revenu nécessaire ou espérance de vie courte.</td></tr>
+          <tr><td>65 ans</td><td>0 %</td><td>Âge pivot.</td></tr>
+          <tr><td>70 ans</td><td>+42 %</td><td class="col-good">Bonification permanente, indexée à vie.</td></tr>
+          <tr><td>72 ans</td><td>+58,8 %</td><td class="col-good">Plafond. Très avantageux si bonne santé et autres revenus suffisants entre 65 et 72.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-tip">
+      <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+      <div><strong>À retenir :</strong> reporter sa rente à 70 ans donne 42 % de plus à vie, indexé. Pour une personne en bonne santé qui peut puiser dans ses REER/CELI entre 65 et 70 ans, c'est souvent la meilleure « rente garantie » disponible sur le marché.</div>
+    </div>
+
+    <h3>Exemples québécois</h3>
+    <div class="scenario-grid">
+      <div class="scenario">
+        <h4>Sophie, 64 ans, infirmière</h4>
+        <p>Salaire moyen ≈ 75 000 $, 38 ans cotisés. Prend sa rente à 65 ans.</p>
+        <div class="scenario-result">≈ 1 380 $/mois (~16 600 $/an)</div>
+      </div>
+      <div class="scenario">
+        <h4>Marc, 60 ans, retraité hâtif</h4>
+        <p>Salaire moyen ≈ 55 000 $, 35 ans cotisés. Prend sa rente dès 60 ans.</p>
+        <div class="scenario-result">≈ 690 $/mois (~8 300 $/an)</div>
+      </div>
+      <div class="scenario">
+        <h4>Julie, 70 ans, professionnelle</h4>
+        <p>Salaire moyen ≈ 71 300 $ (max), 40 ans cotisés. Reporte la rente à 70 ans.</p>
+        <div class="scenario-result">≈ 2 035 $/mois (~24 400 $/an)</div>
+      </div>
+    </div>
+
+    <h3>Limites du calcul</h3>
+    <ul>
+      <li><strong>Pas d'historique année par année.</strong> Le calcul officiel évalue chaque année admissible séparément.</li>
+      <li><strong>Pas de période pour enfants.</strong> Le RRQ exclut certaines années à faible revenu liées à l'éducation des enfants.</li>
+      <li><strong>Pas de RRQ supplémentaire.</strong> Depuis 2019, un régime supplémentaire bonifie progressivement les rentes futures.</li>
+    </ul>
+  </article>
+
+  <section class="section faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Foire aux questions</h2>
+
+    <details>
+      <summary>À quel âge devrais-je prendre ma rente RRQ?</summary>
+      <p>Tout dépend de votre santé, de vos autres revenus et de vos besoins. La règle simple : si vous êtes en bonne santé et que vous pouvez vivre sans la rente entre 65 et 70 ans (avec REER/CELI/épargne), reporter à 70 ans donne +42 % à vie. À l'inverse, si la santé est précaire ou que le revenu est nécessaire, prendre à 60 ou 65 ans peut être justifié.</p>
+    </details>
+
+    <details>
+      <summary>Quelle est la rente maximale du RRQ en 2025?</summary>
+      <p>La rente maximale à 65 ans est d'environ 1 433 $/mois en 2025, soit ~17 200 $/an. Très peu de personnes l'atteignent : il faut avoir cotisé au maximum (gains au-dessus du MGAP) pendant la quasi-totalité de la carrière.</p>
+    </details>
+
+    <details>
+      <summary>Le RRQ est-il imposable?</summary>
+      <p>Oui. La rente RRQ est entièrement imposable au fédéral et au provincial, et elle s'ajoute à votre revenu d'autre source. Elle peut donc influencer votre taux marginal et la récupération de la PSV.</p>
+    </details>
+
+    <details>
+      <summary>Combien faut-il avoir cotisé pour avoir une rente?</summary>
+      <p>Une seule année de cotisation suffit pour avoir droit à une rente, mais évidemment très petite. Pour une rente significative, on parle de plusieurs dizaines d'années avec des gains proches du MGAP.</p>
+    </details>
+
+    <details>
+      <summary>Le RRQ continue-t-il de croître si je travaille après 65 ans?</summary>
+      <p>Oui : depuis 2024, vous pouvez choisir de continuer à cotiser après 65 ans tout en touchant votre rente, ce qui augmente votre rente future via un supplément. C'est utile pour ceux qui restent actifs sur le marché du travail.</p>
+    </details>
+  </section>
+
+  <section class="related" aria-labelledby="rel-title">
+    <h2 id="rel-title">Calculateurs et guides reliés</h2>
+    <div class="related-grid">
+      <a class="related-card" href="oas-gis.html">
+        <div class="label">Calculateur</div>
+        <div class="title">PSV + SRG</div>
+      </a>
+      <a class="related-card" href="retraite.html">
+        <div class="label">Calculateur</div>
+        <div class="title">Capital retraite</div>
+      </a>
+      <a class="related-card" href="reer-vs-celi.html">
+        <div class="label">Calculateur</div>
+        <div class="title">REER vs CELI</div>
+      </a>
+      <a class="related-card" href="../guides/retraite-quebec.html">
+        <div class="label">Guide complet</div>
+        <div class="title">Retraite au Québec : combien faut-il?</div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>FinanceQc</h4>
+        <p>Calculateurs financiers et fiscaux gratuits pour les Québécois.</p>
+      </div>
+      <div>
+        <h4>Calculatrices</h4>
+        <ul>
+          <li><a href="reer-vs-celi.html">REER vs CELI</a></li>
+          <li><a href="rrq.html">Rente RRQ</a></li>
+          <li><a href="oas-gis.html">PSV + SRG</a></li>
+          <li><a href="impot-quebec.html">Impôt Québec</a></li>
+          <li><a href="valeur-nette.html">Valeur nette</a></li>
+          <li><a href="retraite.html">Retraite</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Guides</h4>
+        <ul>
+          <li><a href="../guides/reer-ou-celi.html">REER ou CELI</a></li>
+          <li><a href="../guides/salaire-vs-dividende.html">Salaire vs dividendes</a></li>
+          <li><a href="../guides/retraite-quebec.html">Retraite Québec</a></li>
+          <li><a href="../guides/acheter-ou-louer.html">Acheter ou louer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span data-current-year></span> FinanceQc. Estimations à titre indicatif seulement.
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" aria-label="Retour en haut" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"À quel âge devrais-je prendre ma rente RRQ?","acceptedAnswer":{"@type":"Answer","text":"Tout dépend de votre santé, de vos autres revenus et de vos besoins. Si vous êtes en bonne santé et avez d'autres revenus entre 65 et 70 ans, reporter à 70 ans bonifie la rente de 42 % à vie. Si la santé est précaire ou que le revenu est nécessaire, prendre à 60 ou 65 ans peut être justifié."}},
+    {"@type":"Question","name":"Quelle est la rente maximale du RRQ en 2025?","acceptedAnswer":{"@type":"Answer","text":"Environ 1 433 $/mois à 65 ans, soit ~17 200 $/an. Très peu de personnes l'atteignent : il faut avoir cotisé au maximum (gains au-dessus du MGAP) sur la quasi-totalité de la carrière."}},
+    {"@type":"Question","name":"Le RRQ est-il imposable?","acceptedAnswer":{"@type":"Answer","text":"Oui. La rente RRQ est entièrement imposable au fédéral et au provincial. Elle peut influencer votre taux marginal et la récupération de la PSV."}},
+    {"@type":"Question","name":"Combien faut-il avoir cotisé pour avoir une rente?","acceptedAnswer":{"@type":"Answer","text":"Une seule année de cotisation suffit pour avoir droit à une rente, mais elle sera très petite. Pour une rente significative, il faut plusieurs dizaines d'années cotisées au maximum."}},
+    {"@type":"Question","name":"Le RRQ continue-t-il de croître si je travaille après 65 ans?","acceptedAnswer":{"@type":"Answer","text":"Oui : depuis 2024, vous pouvez continuer à cotiser après 65 ans même en touchant votre rente. Cela augmente votre rente future via un supplément annuel."}}
+  ]
+}
+</script>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/calculators.js"></script>
+</body>
+</html>

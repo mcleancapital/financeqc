@@ -656,6 +656,17 @@ table tbody tr:hover {
   z-index: 60;
 }
 
+/* Invisible bridge over the 0.4rem gap so the menu stays open
+   when moving the mouse from the trigger down into the dropdown. */
+.site-nav .nav-dropdown::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  height: 0.4rem;
+}
+
 .site-nav .nav-group:hover .nav-dropdown,
 .site-nav .nav-group:focus-within .nav-dropdown {
   display: block;

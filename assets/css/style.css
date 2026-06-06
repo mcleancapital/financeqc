@@ -693,20 +693,203 @@ table tbody tr:hover {
   text-decoration: none;
 }
 
+/* =========================================================
+   Navigation mobile — tiroir coulissant + accordéon
+   Le bouton hamburger et la superposition sont injectés par
+   main.js ; toute la présentation est gérée ici.
+   ========================================================= */
+
+/* Bouton hamburger (caché sur grand écran) */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -0.35rem -0.35rem -0.35rem 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--color-primary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-toggle:hover { background: var(--color-bg-soft); }
+.nav-toggle svg { width: 24px; height: 24px; }
+.nav-toggle .icon-close { display: none; }
+
+/* Superposition sombre derrière le tiroir */
+.nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 37, 46, 0.45);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+  z-index: 55;
+}
+
+/* Chevron injecté à côté des entrées à sous-menu (mobile) */
+.nav-sub-toggle { display: none; }
+
+@keyframes navSlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes navSlideOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
 @media (max-width: 860px) {
-  .site-nav { gap: 0.9rem; font-size: 0.9rem; }
-  .site-nav .nav-dropdown {
-    position: static;
-    box-shadow: none;
+  .site-header { z-index: 60; }
+
+  .nav-toggle { display: inline-flex; }
+
+  body.nav-open .nav-toggle .icon-open { display: none; }
+  body.nav-open .nav-toggle .icon-close { display: block; }
+
+  /* Empêche le défilement du fond pendant l'ouverture du menu */
+  body.nav-open { overflow: hidden; }
+  body.nav-open .to-top { display: none; }
+
+  .nav-overlay { display: block; }
+  body.nav-open .nav-overlay {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.25s ease;
+  }
+
+  /* Le menu devient un tiroir qui glisse depuis la droite.
+     Fermé = display:none (sinon le tiroir hors-écran élargit la page :
+     un élément position:fixed n'est pas rogné par overflow-x sur ses
+     ancêtres). On anime l'ouverture/fermeture par keyframes. */
+  .site-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(86vw, 360px);
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: 4.75rem 1.4rem 2rem;
+    background: #fff;
+    box-shadow: -10px 0 36px rgba(15, 29, 46, 0.18);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    transform: translateX(100%);
+    z-index: 56;
+    font-size: 1rem;
+  }
+
+  body.nav-open .site-nav {
+    display: flex;
+    transform: translateX(0);
+    animation: navSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .site-nav.nav-closing {
+    display: flex;
+    transform: translateX(100%);
+    animation: navSlideOut 0.25s ease;
+  }
+
+  /* Entrées de premier niveau (liens simples et groupes) */
+  .site-nav > a,
+  .site-nav .nav-group {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .site-nav > a {
+    display: block;
+    padding: 0.95rem 0.25rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .site-nav > a:hover { color: var(--color-primary); }
+
+  /* Groupe à sous-menu : lien + chevron sur une ligne, sous-menu dessous */
+  .site-nav .nav-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .site-nav .nav-group > a {
+    flex: 1 1 auto;
+    padding: 0.95rem 0.25rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .site-nav .nav-group > a::after { display: none; }
+
+  .nav-sub-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    background: none;
     border: none;
-    padding: 0.2rem 0 0.4rem 0.8rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav-sub-toggle svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.25s ease;
+  }
+
+  .site-nav .nav-group.is-open .nav-sub-toggle svg { transform: rotate(180deg); }
+
+  /* Sous-menu repliable (accordéon) */
+  .site-nav .nav-dropdown {
+    flex-basis: 100%;
+    position: static;
     min-width: 0;
-    /* Always shown (accordion style) on mobile. */
     visibility: visible;
     opacity: 1;
-    transition: none;
+    box-shadow: none;
+    border: none;
+    background: var(--color-bg-soft);
+    border-radius: var(--radius-sm);
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, margin 0.3s ease;
   }
-  .site-nav .nav-group > a::after { display: none; }
+
+  .site-nav .nav-dropdown::before { display: none; }
+
+  .site-nav .nav-group.is-open .nav-dropdown {
+    max-height: 34rem;
+    margin: 0 0 0.85rem;
+  }
+
+  .site-nav .nav-dropdown a {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+  }
 }
 
 /* ---------- Badges ---------- */
@@ -1535,4 +1718,54 @@ table tbody tr:hover {
   padding: 0.8rem 0.7rem;
   color: var(--color-text-muted);
   font-size: 0.9rem;
+}
+
+/* =========================================================
+   Finitions mobiles — typographie et espacements
+   ========================================================= */
+@media (max-width: 640px) {
+  .container { padding: 0 1.1rem; }
+
+  h1 { font-size: 1.7rem; }
+  h2 { font-size: 1.35rem; margin-top: 1.6rem; }
+  h3 { font-size: 1.1rem; }
+
+  .section { padding: 2.25rem 0; }
+  .section-loose { padding: 3rem 0; }
+
+  /* Héro plus compact et lisible sur petit écran */
+  .hero { padding: 2.5rem 0 2rem; }
+  .hero h1 { font-size: 2rem; letter-spacing: -0.3px; }
+  .hero p.lede { font-size: 1.05rem; }
+  .hero-compact { padding: 1.8rem 0 1.2rem; }
+  .hero-compact h1 { font-size: 1.6rem; }
+
+  /* Les boutons du héro occupent toute la largeur (cibles tactiles) */
+  .hero-cta { gap: 0.6rem; }
+  .hero-cta .btn { flex: 1 1 100%; padding: 0.85rem 1.2rem; }
+
+  /* Grilles de cartes en une seule colonne, sans largeur mini rigide */
+  .card-grid,
+  .cat-grid,
+  .scenario-grid,
+  .related-grid,
+  .principles {
+    grid-template-columns: 1fr;
+  }
+
+  .calc-card { padding: 1.25rem; }
+
+  /* Cartes formulaire / résultats moins serrées */
+  .form-card,
+  .results-card { padding: 1.25rem; }
+
+  /* Tableaux : défilement horizontal plutôt que débordement */
+  .compare-table { overflow-x: auto; }
+  .compare-table table { min-width: 520px; }
+
+  /* Recherche un peu plus haute pour le tactile */
+  .search-box input[type="search"] { padding-top: 0.9rem; padding-bottom: 0.9rem; }
+
+  /* Bouton retour-haut légèrement plus petit et décalé */
+  .to-top { right: 1rem; bottom: 1rem; width: 40px; height: 40px; }
 }

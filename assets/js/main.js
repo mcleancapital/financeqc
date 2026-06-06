@@ -36,6 +36,110 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
+
+  /* ---------- Navigation mobile (tiroir + accordéon) ----------
+     Le balisage du menu est identique sur toutes les pages ; on
+     injecte ici le bouton hamburger, la superposition et les
+     chevrons des sous-menus pour éviter d'alourdir chaque page. */
+  const headerInner = document.querySelector(".site-header .container");
+  const nav = document.querySelector(".site-nav");
+
+  if (headerInner && nav) {
+    const body = document.body;
+    if (!nav.id) nav.id = "site-nav";
+
+    // Bouton hamburger (icône ouvrir + icône fermer superposées)
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "nav-toggle";
+    toggle.setAttribute("aria-label", "Ouvrir le menu");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", nav.id);
+    toggle.innerHTML =
+      '<svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>' +
+      '<svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    headerInner.appendChild(toggle);
+
+    // Superposition sombre
+    const overlay = document.createElement("div");
+    overlay.className = "nav-overlay";
+    body.appendChild(overlay);
+
+    const openMenu = () => {
+      body.classList.add("nav-open");
+      toggle.setAttribute("aria-expanded", "true");
+      toggle.setAttribute("aria-label", "Fermer le menu");
+    };
+
+    const closeMenu = () => {
+      if (!body.classList.contains("nav-open")) return;
+      body.classList.remove("nav-open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Ouvrir le menu");
+      // Joue l'animation de sortie avant de masquer (display:none)
+      nav.classList.add("nav-closing");
+      nav.addEventListener(
+        "animationend",
+        () => nav.classList.remove("nav-closing"),
+        { once: true }
+      );
+    };
+
+    toggle.addEventListener("click", () => {
+      if (body.classList.contains("nav-open")) closeMenu();
+      else openMenu();
+    });
+
+    overlay.addEventListener("click", closeMenu);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && body.classList.contains("nav-open")) closeMenu();
+    });
+
+    // Fermer le tiroir lorsqu'on suit un lien de navigation
+    nav.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", closeMenu);
+    });
+
+    // Chevrons repliables pour les groupes à sous-menu
+    nav.querySelectorAll(".nav-group").forEach((group) => {
+      const link = group.querySelector(":scope > a");
+      const dropdown = group.querySelector(":scope > .nav-dropdown");
+      if (!link || !dropdown) return;
+
+      const chevron = document.createElement("button");
+      chevron.type = "button";
+      chevron.className = "nav-sub-toggle";
+      chevron.setAttribute("aria-label", "Afficher le sous-menu");
+      chevron.setAttribute("aria-expanded", "false");
+      chevron.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+
+      chevron.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = group.classList.toggle("is-open");
+        chevron.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      link.insertAdjacentElement("afterend", chevron);
+    });
+
+    // Réinitialiser en revenant au format bureau
+    const desktopMq = window.matchMedia("(min-width: 861px)");
+    const onMqChange = (e) => {
+      if (e.matches) {
+        closeMenu();
+        nav.querySelectorAll(".nav-group.is-open").forEach((g) => {
+          g.classList.remove("is-open");
+          const c = g.querySelector(":scope > .nav-sub-toggle");
+          if (c) c.setAttribute("aria-expanded", "false");
+        });
+      }
+    };
+    if (desktopMq.addEventListener) desktopMq.addEventListener("change", onMqChange);
+    else if (desktopMq.addListener) desktopMq.addListener(onMqChange);
+  }
 })();
 
 /* Formatteurs réutilisés par les calculateurs */

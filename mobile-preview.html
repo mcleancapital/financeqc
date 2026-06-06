@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Aperçu mobile — FinanceQc</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root {
+    --bg: #0a2540;
+    --bg2: #143a64;
+    --accent: #00875a;
+    --line: rgba(255,255,255,0.14);
+    --text: #e8eef5;
+    --muted: #9fb1c4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1200px 600px at 20% -10%, #16365f 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #0e2c4f 0%, transparent 50%),
+      var(--bg);
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2.2rem 1.25rem 3.5rem;
+  }
+
+  header.page-head { text-align: center; margin-bottom: 1.8rem; }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.8rem;
+  }
+  .brand-mark {
+    display: inline-flex;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2b6cb0, var(--accent));
+    align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.85rem; letter-spacing: .5px;
+  }
+
+  h1 { font-size: 1.9rem; margin: 0 0 0.5rem; letter-spacing: -0.4px; }
+  .sub { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1rem; line-height: 1.55; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    margin: 1.8rem auto 0.4rem;
+  }
+  .toolbar .group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.4rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .toolbar button {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+    white-space: nowrap;
+  }
+  .toolbar button:hover { background: rgba(255,255,255,0.08); }
+  .toolbar button.is-active {
+    background: #fff;
+    color: var(--bg);
+  }
+  .toolbar .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--muted);
+    align-self: center;
+    margin-right: 0.2rem;
+  }
+
+  /* Phone */
+  .stage {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .phone {
+    position: relative;
+    width: var(--w, 390px);
+    background: #0b0f14;
+    border-radius: 44px;
+    padding: 14px;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.4),
+      0 30px 70px rgba(0,0,0,0.55),
+      inset 0 0 0 2px rgba(255,255,255,0.06);
+    transition: width .25s ease;
+  }
+  .phone::before { /* notch */
+    content: "";
+    position: absolute;
+    top: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 46%; height: 26px;
+    background: #0b0f14;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    z-index: 3;
+  }
+  .phone .screen {
+    position: relative;
+    border-radius: 32px;
+    overflow: hidden;
+    background: #fff;
+    height: var(--h, 800px);
+    transition: height .25s ease;
+  }
+  .phone iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .phone .side-btn {
+    position: absolute;
+    right: -3px;
+    width: 3px;
+    background: #1a212b;
+    border-radius: 2px;
+  }
+  .phone .side-btn.b1 { top: 120px; height: 56px; }
+  .phone .side-btn.b2 { top: 190px; height: 56px; }
+
+  .hint {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 1.6rem;
+    line-height: 1.5;
+  }
+  .hint code {
+    background: rgba(255,255,255,0.08);
+    padding: 0.1rem 0.4rem;
+    border-radius: 5px;
+    font-size: 0.82rem;
+  }
+  .hint a { color: #7fd1b0; }
+
+  @media (max-width: 460px) {
+    .phone { --w: 92vw; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page-head">
+    <div class="brand"><span class="brand-mark">FQ</span> FinanceQc</div>
+    <h1>Aperçu mobile</h1>
+    <p class="sub">Le site rendu dans un vrai cadre de téléphone. Les pages ci-dessous se chargent à la largeur d'un mobile, donc le nouveau menu et la mise en page réagissent exactement comme sur un appareil. Touchez le bouton <strong>☰</strong> dans la barre du site pour ouvrir le tiroir de navigation.</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="group" id="pages">
+      <span class="label">Page</span>
+      <button data-src="index.html" class="is-active">Accueil</button>
+      <button data-src="calculatrices/index.html">Calculatrices</button>
+      <button data-src="calculatrices/reer-vs-celi.html">REER vs CELI</button>
+      <button data-src="guides/reer-ou-celi.html">Guide</button>
+      <button data-src="glossaire.html">Glossaire</button>
+    </div>
+    <div class="group" id="sizes">
+      <span class="label">Largeur</span>
+      <button data-w="375" data-h="780">iPhone SE</button>
+      <button data-w="390" data-h="800" class="is-active">iPhone 14</button>
+      <button data-w="430" data-h="850">Pro Max</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="phone" id="phone" style="--w:390px; --h:800px;">
+      <span class="side-btn b1"></span>
+      <span class="side-btn b2"></span>
+      <div class="screen">
+        <iframe id="frame" src="index.html" title="Aperçu mobile de FinanceQc" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint">
+    Astuce : pour la vue la plus fidèle, ouvrez aussi les outils de développement de votre navigateur
+    (<code>F12</code>) puis l'icône d'appareil mobile.<br>
+    Cette page n'est pas indexée et n'est pas reliée au reste du site — c'est un simple atelier d'aperçu.
+    <a href="index.html">← Retour au site</a>
+  </p>
+</div>
+
+<script>
+  (function () {
+    var frame = document.getElementById("frame");
+    var phone = document.getElementById("phone");
+
+    function activate(group, btn) {
+      group.querySelectorAll("button").forEach(function (b) {
+        b.classList.toggle("is-active", b === btn);
+      });
+    }
+
+    document.getElementById("pages").addEventListener("click", function (e) {
+      var btn = e.target.closest("button");
+      if (!btn) return;
+      frame.src = btn.getAttribute("data-src");
+      activate(this, btn);
+    });
+
+    document.getElementById("sizes").addEventListener("click", function (e) {
+      var btn = e.target.closest("button");
+      if (!btn) return;
+      phone.style.setProperty("--w", btn.getAttribute("data-w") + "px");
+      phone.style.setProperty("--h", btn.getAttribute("data-h") + "px");
+      activate(this, btn);
+    });
+  })();
+</script>
+</body>
+</html>

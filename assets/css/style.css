@@ -643,7 +643,8 @@ table tbody tr:hover {
 }
 
 .site-nav .nav-dropdown {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
   position: absolute;
   top: calc(100% + 0.4rem);
   left: 0;
@@ -654,6 +655,9 @@ table tbody tr:hover {
   box-shadow: var(--shadow-lg);
   padding: 0.5rem;
   z-index: 60;
+  /* Grace period on hide: stay visible briefly, then fade out, so a
+     fast mouse move from the trigger into the menu doesn't lose it. */
+  transition: opacity 0.18s ease 0.12s, visibility 0s linear 0.3s;
 }
 
 /* Invisible bridge over the 0.4rem gap so the menu stays open
@@ -669,7 +673,10 @@ table tbody tr:hover {
 
 .site-nav .nav-group:hover .nav-dropdown,
 .site-nav .nav-group:focus-within .nav-dropdown {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  /* Show immediately (no delay) when entering. */
+  transition: opacity 0.12s ease 0s, visibility 0s linear 0s;
 }
 
 .site-nav .nav-dropdown a {
@@ -694,7 +701,10 @@ table tbody tr:hover {
     border: none;
     padding: 0.2rem 0 0.4rem 0.8rem;
     min-width: 0;
-    display: block;
+    /* Always shown (accordion style) on mobile. */
+    visibility: visible;
+    opacity: 1;
+    transition: none;
   }
   .site-nav .nav-group > a::after { display: none; }
 }

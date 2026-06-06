@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.financeqc.ca/sitemap.xml
+Sitemap: https://guidefinancier.ca/sitemap.xml
